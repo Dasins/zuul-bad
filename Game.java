@@ -11,46 +11,58 @@
  *  rooms, creates the parser and starts the game.  It also evaluates and
  *  executes the commands that the parser returns.
  * 
- * @author  Michael KÃ¶lling and David J. Barnes
+ * @author  Michael Kölling and David J. Barnes
  * @version 2011.07.31
+ * @author  D4s1ns
+ * @version 2018.03.13
  */
 
-public class Game 
-{
+public class Game  {
+    // Analizador de sintaxis.
     private Parser parser;
+    // Habitacion actual.
     private Room currentRoom;
         
     /**
-     * Create the game and initialise its internal map.
+     * Crea el juego e inicializa su mapa interno.
      */
-    public Game() 
-    {
+    public Game() {
         createRooms();
         parser = new Parser();
     }
 
     /**
-     * Create all the rooms and link their exits together.
+     * Crea todas las habitaciones y establece como se unen entre ellas.
      */
-    private void createRooms()
-    {
-        Room outside, theater, pub, lab, office;
-      
-        // create the rooms
-        outside = new Room("outside the main entrance of the university");
-        theater = new Room("in a lecture theater");
-        pub = new Room("in the campus pub");
-        lab = new Room("in a computing lab");
-        office = new Room("in the computing admin office");
+    private void createRooms() {
+        // Habitaciones:
+        Room bachiller, pasillo, fp, aula201, aula202, aula203;
         
-        // initialise room exits
-        outside.setExits(null, theater, lab, pub);
-        theater.setExits(null, null, null, outside);
-        pub.setExits(null, outside, null, null);
-        lab.setExits(outside, office, null, null);
-        office.setExits(null, null, null, lab);
-
-        currentRoom = outside;  // start game outside
+        // Creacion de las habitaciones:
+        bachiller = new Room("Pasillo de Bachiller.\n"
+                            + "La salida de emergencia y las aulas de esta zona estan cerradas.");               
+        pasillo = new Room("Pasillo principal.\n" 
+                          + "En los extremos de la sala se encuentran el pasillo de FP y el pasillo de Bachiller.\n" 
+                          + "En el medio, puedes ver las escaleras que conducen a la primera planta.\n" 
+                          + "Al fondo de la sala, se encuentran los aseos (que parecen fuera de servicio) y el ascensor\n"
+                          + "que requiere de una llave para funcionar.\n");              
+        fp = new Room("Pasillo de FP.\n" + "La zona esta desierta, pero se escucha actividad en las aulas.\n");
+        aula201 = new Room("Aula de Examenes.\n" + "Un escalofrio recorre tu espalda."
+                          + "No puedes evitar sentirte vigilado por las cientos de almas que han sido suspendidas entre estos muros.\n");            
+        aula202 = new Room("Aula de Segundo.\n" 
+                          + "Hay un par de repetidores que parecen abrumados por la tarea que les ha mandado Roberto.\n");             
+        aula203 = new Room("Aula de Programacion.\n" + "Los alumnos parecen estresados y abatidos.\n");
+        
+        // Vincular salidas:
+        bachiller.setExits(null, pasillo, null, null);
+        pasillo.setExits(null, fp, null, bachiller);
+        fp.setExits(null, aula203, aula201, pasillo);
+        aula201.setExits(fp, null, null, null);
+        aula202.setExits(null, null, null, null);
+        aula203.setExits(null, null, null, fp);
+        
+        // Establece la habitacion inicial:
+        currentRoom = pasillo;
     }
 
     /**
