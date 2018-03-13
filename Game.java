@@ -42,12 +42,12 @@ public class Game  {
         bachiller = new Room("Pasillo de Bachiller.\n"
                             + "La salida de emergencia y las aulas de esta zona estan cerradas.");               
         pasillo = new Room("Pasillo principal.\n" 
-                          + "En los extremos de la sala se encuentran el pasillo de FP y el pasillo de Bachiller.\n" 
+                          + "En los extremos de la sala se encuentran: el pasillo de FP y el pasillo de Bachiller.\n" 
                           + "En el medio, puedes ver las escaleras que conducen a la primera planta.\n" 
-                          + "Al fondo de la sala, se encuentran los aseos (que parecen fuera de servicio) y el ascensor\n"
+                          + "Al fondo de la sala, se encuentran los aseos (que parecen fuera de servicio) y, el ascensor\n"
                           + "que requiere de una llave para funcionar.\n");              
         fp = new Room("Pasillo de FP.\n" + "La zona esta desierta, pero se escucha actividad en las aulas.\n");
-        aula201 = new Room("Aula de Examenes.\n" + "Un escalofrio recorre tu espalda."
+        aula201 = new Room("Aula de Examenes.\n" + "Un escalofrio recorre tu espalda.\n"
                           + "No puedes evitar sentirte vigilado por las cientos de almas que han sido suspendidas entre estos muros.\n");            
         aula202 = new Room("Aula de Segundo.\n" 
                           + "Hay un par de repetidores que parecen abrumados por la tarea que les ha mandado Roberto.\n");             
@@ -63,6 +63,27 @@ public class Game  {
         
         // Establece la habitacion inicial:
         currentRoom = pasillo;
+    }
+    
+    /**
+     * Imprime la descripcion de la habitacion actual.
+     */
+    private void printLocationInfo() {
+        System.out.println("Estas en el " + currentRoom.getDescription());
+        System.out.print("Exits: ");
+        if(currentRoom.northExit != null) {
+            System.out.print("north ");
+        }
+        if(currentRoom.eastExit != null) {
+            System.out.print("east ");
+        }
+        if(currentRoom.southExit != null) {
+            System.out.print("south ");
+        }
+        if(currentRoom.westExit != null) {
+            System.out.print("west ");
+        }
+        System.out.println();
     }
 
     /**
@@ -93,21 +114,7 @@ public class Game  {
         System.out.println("World of Zuul is a new, incredibly boring adventure game.");
         System.out.println("Type 'help' if you need help.");
         System.out.println();
-        System.out.println("You are " + currentRoom.getDescription());
-        System.out.print("Exits: ");
-        if(currentRoom.northExit != null) {
-            System.out.print("north ");
-        }
-        if(currentRoom.eastExit != null) {
-            System.out.print("east ");
-        }
-        if(currentRoom.southExit != null) {
-            System.out.print("south ");
-        }
-        if(currentRoom.westExit != null) {
-            System.out.print("west ");
-        }
-        System.out.println();
+        printLocationInfo();
     }
 
     /**
@@ -188,21 +195,7 @@ public class Game  {
         }
         else {
             currentRoom = nextRoom;
-            System.out.println("You are " + currentRoom.getDescription());
-            System.out.print("Exits: ");
-            if(currentRoom.northExit != null) {
-                System.out.print("north ");
-            }
-            if(currentRoom.eastExit != null) {
-                System.out.print("east ");
-            }
-            if(currentRoom.southExit != null) {
-                System.out.print("south ");
-            }
-            if(currentRoom.westExit != null) {
-                System.out.print("west ");
-            }
-            System.out.println();
+            printLocationInfo();
         }
     }
 
