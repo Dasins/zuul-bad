@@ -53,22 +53,14 @@ public class Room
     }
     
     /**
-     * Define the exits of this room.  Every direction either leads
-     * to another room or is null (no exit there).
-     * @param north The north exit.
-     * @param east The east east.
-     * @param south The south exit.
-     * @param west The west exit.
-     * @param southEast The southEast exit.
+     * Crea una salida en la direccion indicada hacia la habitacion especificada. 
+     * Si la direccion ya conecta con otro sala, la sobreescribe (se da por hecho que se introducen direcciones validas).
+     * 
+     * @param direccion La direccion en la que se encuentra la salida.
+     * @param sala La habitacion con la que conecta la salida.
      */
-    public void setExits(Room north, Room northWest, Room east, Room south, Room southEast, Room west) 
-    {
-        salidas.put("north", north);
-        salidas.put("northwest", northWest);
-        salidas.put("east", east);
-        salidas.put("south", south);
-        salidas.put("southeast", southEast);
-        salidas.put("west", west);
+    public void setExit(String direccion, Room salaVecina) {
+        salidas.put(direccion, salaVecina);
     }
 
     /**
@@ -87,13 +79,11 @@ public class Room
      */
      public String getExitString() {
         String retorno = "Exits: ";
-        for (Map.Entry<String, Room> entry : salidas.entrySet()) {
-            if (entry.getValue() != null) {
-                retorno += entry.getKey() + " ";
-            }
+        for (String key : salidas.keySet()) {
+                retorno += key + " ";
         }
         retorno += "\n";
         return retorno;
-     }
+    }
 
 }

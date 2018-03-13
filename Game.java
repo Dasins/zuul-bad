@@ -54,12 +54,18 @@ public class Game  {
         aula203 = new Room("Aula de Programacion.\n" + "Los alumnos parecen estresados y abatidos.\n");
         
         // Vincular salidas:
-        bachiller.setExits(null, null, pasillo, null, null, null);
-        pasillo.setExits(null, null, fp, null, null, bachiller);
-        fp.setExits(null, null, aula203, aula201, aula202, pasillo);
-        aula201.setExits(fp, null, null, null, null, null);
-        aula202.setExits(null, fp, null, aula203, null, null);
-        aula203.setExits(null, null, aula202, null, null, fp);
+        bachiller.setExit("east", pasillo);
+        pasillo.setExit("east", fp);
+        pasillo.setExit("west", bachiller);
+        fp.setExit("east", aula203);
+        fp.setExit("south", aula201);
+        fp.setExit("southeast", aula202);
+        fp.setExit("west", pasillo);
+        aula201.setExit("north", fp);
+        aula202.setExit("northwest",fp);
+        aula202.setExit("south",aula203);
+        aula203.setExit("east",aula202);
+        aula203.setExit("west",fp);      
         
         // Establece la habitacion inicial:
         currentRoom = pasillo;
