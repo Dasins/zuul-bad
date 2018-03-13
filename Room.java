@@ -1,3 +1,7 @@
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Iterator;
+
 /**
  * Class Room - a room in an adventure game.
  *
@@ -15,12 +19,7 @@
 public class Room 
 {
     private String description;
-    private Room northExit;
-    private Room southExit;
-    private Room eastExit;
-    private Room westExit;
-    private Room southEastExit;
-    private Room northWestExit;
+    private HashMap<String, Room> salidas;
 
     /**
      * Create a room described "description". Initially, it has
@@ -31,6 +30,7 @@ public class Room
     public Room(String description) 
     {
         this.description = description;
+        salidas = new HashMap<>();
     }
     
     /**
@@ -40,20 +40,14 @@ public class Room
      */
     public Room getExit(String direccion) {
         Room retorno = null;
-        if (direccion.equals("north")){
-            retorno = northExit;
-        }
-        if (direccion.equals("east")){
-            retorno = eastExit;
-        }
-        if (direccion.equals("south")){
-            retorno = southExit;
-        }
-        if (direccion.equals("southeast")){
-            retorno = southEastExit;
-        }
-        if (direccion.equals("west")){
-            retorno = westExit;
+        boolean buscando = true;
+        Iterator<Map.Entry<String, Room>> entries = salidas.entrySet().iterator();
+        while (entries.hasNext() && buscando) {
+            Map.Entry<String, Room> entry = entries.next();
+            if (direccion.equals(entry.getKey())) {
+               retorno = entry.getValue();
+               buscando = false;
+            }
         }
         return retorno; 
     }
@@ -69,18 +63,12 @@ public class Room
      */
     public void setExits(Room north, Room northWest, Room east, Room south, Room southEast, Room west) 
     {
-        if(north != null)
-            northExit = north;
-        if(east != null)
-            eastExit = east;
-        if(south != null)
-            southExit = south;
-        if(west != null)
-            westExit = west;
-        if(southEast != null)
-            southEastExit = southEast;
-        if(northWest != null)
-            northWestExit = northWest;
+        salidas.put("north", north);
+        salidas.put("northwest", northWest);
+        salidas.put("east", east);
+        salidas.put("south", south);
+        salidas.put("southeast", southEast);
+        salidas.put("west", west);
     }
 
     /**
@@ -99,23 +87,10 @@ public class Room
      */
      public String getExitString() {
         String retorno = "Exits: ";
-        if(northExit != null) {
-            retorno += "north ";
-        }
-        if(eastExit != null) {
-            retorno += "east ";
-        }
-        if(southExit != null) {
-            retorno += "south ";
-        }
-        if(westExit != null) {
-            retorno += "west ";
-        }
-        if(southEastExit != null) {
-            retorno += "southeast ";
-        }
-        if(northWestExit != null) {
-            retorno += "northwest ";
+        for (Map.Entry<String, Room> entry : salidas.entrySet()) {
+            if (entry.getValue() != null) {
+                retorno += entry.getKey() + " ";
+            }
         }
         retorno += "\n";
         return retorno;
