@@ -75,8 +75,7 @@ public class Game  {
      * Imprime la descripcion de la habitacion actual y sus salidas.
      */
     private void printLocationInfo() {
-        System.out.println("\nEstas en el " + currentRoom.getDescription());
-        System.out.println(currentRoom.getExitString());
+        System.out.println("\nEstas en el " + currentRoom.getLongDescription());
     }
 
     /**

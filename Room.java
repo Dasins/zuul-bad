@@ -77,13 +77,23 @@ public class Room
      *
      * @ return A description of the available exits.
      */
-     public String getExitString() {
+    public String getExitString() {
         String retorno = "Exits: ";
         for (String key : salidas.keySet()) {
                 retorno += key + " ";
         }
         retorno += "\n";
         return retorno;
+    }
+    
+    /**
+     * Return a long description of this room, of the form:
+     * You are in the 'name of room'
+     * Exits: north west southwest
+     * @return A description of the room, including exits.
+     */
+    public String getLongDescription() {
+        return description + "\n" + getExitString();
     }
 
 }
