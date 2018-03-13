@@ -14,12 +14,12 @@
  */
 public class Room 
 {
-    public String description;
-    public Room northExit;
-    public Room southExit;
-    public Room eastExit;
-    public Room westExit;
-    public Room southEastExit;
+    private String description;
+    private Room northExit;
+    private Room southExit;
+    private Room eastExit;
+    private Room westExit;
+    private Room southEastExit;
 
     /**
      * Create a room described "description". Initially, it has
@@ -31,7 +31,32 @@ public class Room
     {
         this.description = description;
     }
-
+    
+    /**
+     * Devuelve la habitacion asociada a la direccion introducida por parametro o, null, en cualquier otro caso.
+     * @param direccion Una cadena que contiene una direccion cardinal.
+     * @return Devuelve la habitacion asociada a la direccion introducida por parametro o, null, en cualquier otro caso.
+     */
+    public Room getExit(String direccion) {
+        Room retorno = null;
+        if (direccion.equals("north")){
+            retorno = northExit;
+        }
+        if (direccion.equals("east")){
+            retorno = eastExit;
+        }
+        if (direccion.equals("south")){
+            retorno = southExit;
+        }
+        if (direccion.equals("southeast")){
+            retorno = southEastExit;
+        }
+        if (direccion.equals("west")){
+            retorno = westExit;
+        }
+        return retorno; 
+    }
+    
     /**
      * Define the exits of this room.  Every direction either leads
      * to another room or is null (no exit there).
@@ -62,5 +87,32 @@ public class Room
     {
         return description;
     }
+    
+    /**
+     * Return a description of the room's exits.
+     * For example: "Exits: north east west"
+     *
+     * @ return A description of the available exits.
+     */
+     public String getExitString() {
+        String retorno = "Exits: ";
+        if(northExit != null) {
+            retorno += "north ";
+        }
+        if(eastExit != null) {
+            retorno += "east ";
+        }
+        if(southExit != null) {
+            retorno += "south ";
+        }
+        if(westExit != null) {
+            retorno += "west ";
+        }
+        if(southEastExit != null) {
+            retorno += "southeast ";
+        }
+        retorno += "\n";
+        return retorno;
+     }
 
 }
