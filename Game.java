@@ -54,19 +54,19 @@ public class Game  {
         aula203 = new Room("Aula de Programacion.\n" + "Los alumnos parecen estresados y abatidos.\n");
         
         // Vincular salidas:
-        bachiller.setExits(null, pasillo, null, null);
-        pasillo.setExits(null, fp, null, bachiller);
-        fp.setExits(null, aula203, aula201, pasillo);
-        aula201.setExits(fp, null, null, null);
-        aula202.setExits(null, null, null, null);
-        aula203.setExits(null, null, null, fp);
+        bachiller.setExits(null, pasillo, null, null, null);
+        pasillo.setExits(null, fp, null, null, bachiller);
+        fp.setExits(null, aula203, aula201, aula202, pasillo);
+        aula201.setExits(fp, null, null, null, null);
+        aula202.setExits(null, null, aula203, null, null);
+        aula203.setExits(null, aula202, null, null, fp);
         
         // Establece la habitacion inicial:
         currentRoom = pasillo;
     }
     
     /**
-     * Imprime la descripcion de la habitacion actual.
+     * Imprime la descripcion de la habitacion actual y sus salidas.
      */
     private void printLocationInfo() {
         System.out.println("Estas en el " + currentRoom.getDescription());
@@ -82,6 +82,9 @@ public class Game  {
         }
         if(currentRoom.westExit != null) {
             System.out.print("west ");
+        }
+        if(currentRoom.southEastExit != null) {
+            System.out.print("southeast ");
         }
         System.out.println();
     }
@@ -188,6 +191,9 @@ public class Game  {
         }
         if(direction.equals("west")) {
             nextRoom = currentRoom.westExit;
+        }
+        if(direction.equals("southeast")) {
+            nextRoom = currentRoom.southEastExit;
         }
 
         if (nextRoom == null) {
