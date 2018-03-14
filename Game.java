@@ -155,7 +155,8 @@ public class Game  {
         System.out.println("You are lost. You are alone. You wander");
         System.out.println("around at the university.");
         System.out.println();
-        parser.showCommands();
+        System.out.println("Los comandos disponibles son:");
+        System.out.println(parser.getAllCommands());
     }
 
     /** 

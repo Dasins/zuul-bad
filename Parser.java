@@ -64,10 +64,10 @@ public class Parser
     }
     
     /**
-     * Imprime todos los comandos validos
+     * Devuelve una cadena con todos los comandos validos.
      */
-    public void showCommands() {
-        commands.showAll();
+    public String getAllCommands() {
+        return commands.getCommandList();
     }
  
 }

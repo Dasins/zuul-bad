@@ -40,12 +40,13 @@ public class CommandWords
     }
     
     /**
-     * Imprime todos los comandos validos
+     * Devuelve una cadena con todos los commandos validos separados por espacios.
      */
-    public void showAll() {
-        System.out.println("Your command words are:");
+    public String getCommandList() {
+        String retorno = "";
         for (String command : validCommands) {
-            System.out.print(command + " ");
+            retorno += command + " ";
         }
+        return retorno;
     }
 }
