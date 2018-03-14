@@ -66,7 +66,8 @@ public class Parser
     /**
      * Imprime todos los comandos validos
      */
-    private void showCommands() {
+    public void showCommands() {
         commands.showAll();
     }
+ 
 }
