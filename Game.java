@@ -136,6 +136,9 @@ public class Game  {
         else if (commandWord.equals("look")) {
             look();
         }
+        else if (commandWord.equals("eat")) {
+            eat();
+        }
 
         return wantToQuit;
     }
@@ -198,8 +201,17 @@ public class Game  {
         }
     }
     
-    private void look() 
-    {
+    /**
+     * Muestra la informacion de la habitacion actual.
+     */
+    private void look() {
         System.out.println(currentRoom.getLongDescription());
+    }
+    
+    /**
+     * No hace mucho aun
+     */
+    private void eat() {
+        System.out.println("Acabas de comer, aun no tienes hambre");
     }
 }
