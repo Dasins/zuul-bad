@@ -20,17 +20,20 @@ public class Room
 {
     private String description;
     private HashMap<String, Room> salidas;
+    private Item item;
 
     /**
      * Create a room described "description". Initially, it has
      * no exits. "description" is something like "a kitchen" or
      * "an open court yard".
      * @param description The room's description.
+     * @param item El item contenido en esta sala, null si no contiene nada.
      */
-    public Room(String description) 
+    public Room(String description, Item item) 
     {
         this.description = description;
         salidas = new HashMap<>();
+        this.item = item;
     }
     
     /**
@@ -93,7 +96,7 @@ public class Room
      * @return A description of the room, including exits.
      */
     public String getLongDescription() {
-        return description + "\n" + getExitString();
+        return description + "\n" + item.getInfo() +  getExitString();
     }
 
 }
