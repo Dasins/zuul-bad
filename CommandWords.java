@@ -45,7 +45,7 @@ public class CommandWords
     public void showAll() {
         System.out.println("Your command words are:");
         for (String command : validCommands) {
-            System.out.print(command);
+            System.out.print(command + " ");
         }
     }
 }
