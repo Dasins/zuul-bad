@@ -20,7 +20,7 @@ public class Room
 {
     private String description;
     private HashMap<String, Room> salidas;
-    private Item item;
+    private HashMap<String, Item>; 
 
     /**
      * Create a room described "description". Initially, it has
@@ -96,7 +96,7 @@ public class Room
      * @return A description of the room, including exits.
      */
     public String getLongDescription() {
-        return description + "\n" + item.getInfo() +  getExitString();
+        return description + "\n" + item.getInfo() + "\n" +  getExitString();
     }
 
 }
