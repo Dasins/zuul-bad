@@ -1,4 +1,6 @@
 import java.util.Stack;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *  This class is the main class of the "World of Zuul" application. 
@@ -26,6 +28,11 @@ public class Game  {
     private Room currentRoom;
     // Ultima habitacion.
     private Stack<Room> roomLog;
+    // Coleccion de objetos.
+    private HashMap<String,Item> items;
+    // Peso maximo del personaje.
+    private static final int cargaMax = 100;
+    private int cargaActual;
         
     /**
      * Crea el juego e inicializa su mapa interno.
@@ -34,6 +41,8 @@ public class Game  {
         createRooms();
         parser = new Parser();
         roomLog = new Stack<>();
+        items = new HashMap<>();
+        cargaActual = 0;
     }
 
     /**
@@ -74,8 +83,9 @@ public class Game  {
         aula203.setExit("west",fp); 
         
         // Anadir objetos
-        pasillo.setItem("Alarma", new Item("Alarma de incendios", 100));
-        aula201.setItem("Esqueleto", new Item("Esqueleto de repetidor", 80));
+        pasillo.setItem(new Item("Alarma de incendios", 1000));
+        aula201.setItem(new Item("Esqueleto de repetidor", 80));
+        aula201.setItem(new Item("Examen de redes", 10));
         
         
         // Establece la habitacion inicial:
@@ -149,6 +159,18 @@ public class Game  {
         }
         else if (commandWord.equals("eat")) {
             eat();
+        }
+        else if (commandWord.equals("back")) {
+            back();
+        }
+        else if (commandWord.equals("items")) {
+            items();
+        }
+        else if (commandWord.equals("drop")) {
+            drop(command);
+        }
+        else if (commandWord.equals("take")) {
+            take(command);
         }
         else if (commandWord.equals("back")) {
             back();
@@ -239,5 +261,62 @@ public class Game  {
      */
     private void eat() {
         System.out.println("Acabas de comer, aun no tienes hambre");
+    }
+    
+    /**
+     * Coge un item de la sala si existe.
+     * @param nombreItem El nombre del objeto que queremos coger.
+     */
+    private void take(Command command) {
+        if(!command.hasSecondWord()) {
+            // if there is no second word, we don't know where to take...
+            System.out.println("Coger que?");
+        }
+        else {
+            String nombreItem = command.getSecondWord();
+            Item item = currentRoom.pop(nombreItem);
+            if (item == null) {
+                System.out.println("No hay nada asi en la sala");
+            }
+            else {
+                if(cargaActual + item.getPeso() > cargaMax) {
+                    System.out.println("Demasiado peso, no puedes con ello");
+                } 
+                else {
+                    items.put(item.getID(),item);
+                }
+            }
+        } 
+    }
+    
+    /**
+     * Deja el objeto especificado en la sala actual.
+     * @param nombreItem El nombre del objeto que quieres dejar.
+     */
+    private void drop(Command command) {
+        if(!command.hasSecondWord()) {
+            // if there is no second word, we don't know where to drop...
+            System.out.println("dejar que?");
+        }
+        else {
+            String nombreItem = command.getSecondWord();
+            Item item = items.get(nombreItem);
+            if (item == null) {
+                System.out.println("No llevas ese objeto encima");
+            }
+            else {
+                currentRoom.setItem(item);
+                items.remove(item);
+            }
+        } 
+    }
+    
+    /**
+     * Imprime todos los items del inventario.
+     */
+    private void items() {
+        for (Map.Entry<String, Item> entries : items.entrySet()) {
+            System.out.println(entries.getValue().getInfo());
+        }
     }
 }

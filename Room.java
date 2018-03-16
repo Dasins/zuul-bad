@@ -60,8 +60,8 @@ public class Room
      * @param nombre El nombre del objeto.
      * @param item El objeto que sera anadido a la sala.
      */
-    public void setItem(String nombre, Item item) {
-        objetos.put(nombre, item);
+    public void setItem(Item item) {
+        objetos.put(item.getID(), item);
     }
     
     /**
@@ -119,5 +119,19 @@ public class Room
     public String getLongDescription() {
         return description + "\n" + getAllItems() + "\n" +  getExitString();
     }
-
+    
+    
+    /**
+     * Devuelve el item contenido por parametro si existe en la habitacion o null en cualquier otro caso.
+     * @param nombreItem El nombre del item buscado.
+     * @return Devuelve el item contenido por parametro si existe en la habitacion o null en cualquier otro caso.
+     */
+    public Item pop(String nombreItem) {
+        Item retorno = null;
+        if (objetos.containsKey(nombreItem) ) {
+            retorno = objetos.get(nombreItem);
+            objetos.remove(nombreItem);
+        }
+        return retorno;
+    }
 }

@@ -6,6 +6,8 @@
  * @version 2018/03/12
  */
 public class Item {
+    // ID
+    String id;
     // Nombre
     String nombre;
     // Peso
@@ -20,6 +22,7 @@ public class Item {
     public Item(String nombre, int peso) {
         this.nombre = nombre;
         this.peso = peso;
+        id = nombre.split(" ")[0].toLowerCase();
     }
     
     /**
@@ -31,10 +34,18 @@ public class Item {
     }
     
     /**
+     * Devuelve el id del item.
+     * @return Devuelve el id del item.
+     */
+     public String getID() {
+        return id;
+    }
+    
+    /**
      * Devuelve el peso del item.
      * @return Devuelve el peso del item.
      */
-    public int getItem() {
+    public int getPeso() {
         return peso;
     }
     
@@ -43,6 +54,6 @@ public class Item {
      * @return Devuelve una cadena con toda la informacion del item.
      */
     public String getInfo() {
-        return nombre + " peso: " + peso;
+        return "[" + id + "] " + nombre + " peso: " + peso;
     }
 }
