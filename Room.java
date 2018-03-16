@@ -20,7 +20,7 @@ public class Room
 {
     private String description;
     private HashMap<String, Room> salidas;
-    private HashMap<String, Item>; 
+    private HashMap<String, Item> objetos; 
 
     /**
      * Create a room described "description". Initially, it has
@@ -29,11 +29,11 @@ public class Room
      * @param description The room's description.
      * @param item El item contenido en esta sala, null si no contiene nada.
      */
-    public Room(String description, Item item) 
+    public Room(String description) 
     {
         this.description = description;
         salidas = new HashMap<>();
-        this.item = item;
+        objetos = new HashMap<>();
     }
     
     /**
@@ -56,6 +56,15 @@ public class Room
     }
     
     /**
+     * Anade un objeto a la sala.
+     * @param nombre El nombre del objeto.
+     * @param item El objeto que sera anadido a la sala.
+     */
+    public void setItem(String nombre, Item item) {
+        objetos.put(nombre, item);
+    }
+    
+    /**
      * Crea una salida en la direccion indicada hacia la habitacion especificada. 
      * Si la direccion ya conecta con otro sala, la sobreescribe (se da por hecho que se introducen direcciones validas).
      * 
@@ -72,6 +81,18 @@ public class Room
     public String getDescription()
     {
         return description;
+    }
+    
+    /**
+     * Devuelve una cadena con la descripcion de todos los objetos de la sala o una cadena vacia si no ha objetos.
+     * @return Devuelve una cadena con la descripcion de todos los objetos de la sala o una cadena vacia si no ha objetos.
+     */
+    public String getAllItems() {
+        String retorno = "";
+        for (Map.Entry<String, Item> entries : objetos.entrySet()) {
+                retorno += entries.getValue().getInfo() + "\n";
+        }
+        return retorno;
     }
     
     /**
@@ -96,7 +117,7 @@ public class Room
      * @return A description of the room, including exits.
      */
     public String getLongDescription() {
-        return description + "\n" + item.getInfo() + "\n" +  getExitString();
+        return description + "\n" + getAllItems() + "\n" +  getExitString();
     }
 
 }

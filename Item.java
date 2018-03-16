@@ -43,6 +43,6 @@ public class Item {
      * @return Devuelve una cadena con toda la informacion del item.
      */
     public String getInfo() {
-        return nombre + " " + peso;
+        return nombre + " peso: " + peso;
     }
 }

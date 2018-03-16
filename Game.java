@@ -40,19 +40,19 @@ public class Game  {
         
         // Creacion de las habitaciones:
         bachiller = new Room("Pasillo de Bachiller.\n"
-                            + "La salida de emergencia y las aulas de esta zona estan cerradas.\n", null);               
+                            + "La salida de emergencia y las aulas de esta zona estan cerradas.\n");               
         pasillo = new Room("Pasillo principal.\n" 
                           + "En los extremos de la sala se encuentran: el pasillo de FP y el pasillo de Bachiller.\n" 
                           + "En el medio, puedes ver las escaleras que conducen a la primera planta.\n" 
                           + "Al fondo de la sala, se encuentran los aseos (que parecen fuera de servicio) y, el ascensor\n"
-                          + "que requiere de una llave para funcionar.\n", new Item("alarma de incendios", 100));              
-        fp = new Room("Pasillo de FP.\n" + "La zona esta desierta, pero se escucha actividad en las aulas.\n", null);
+                          + "que requiere de una llave para funcionar.\n");              
+        fp = new Room("Pasillo de FP.\n" + "La zona esta desierta, pero se escucha actividad en las aulas.\n");
         aula201 = new Room("Aula de Examenes.\n" + "Un escalofrio recorre tu espalda.\n"
-                          + "No puedes evitar sentirte vigilado por las cientos de almas que han sido suspendidas entre estos muros.\n",  
-                          new Item("Esqueleto de alumno", 6));            
+                          + "No puedes evitar sentirte vigilado" 
+                          +  "por las cientos de almas que han sido suspendidas entre estos muros.\n");            
         aula202 = new Room("Aula de Segundo.\n" 
-                          + "Hay un par de repetidores que parecen abrumados por la tarea que les ha mandado Roberto.\n", null);             
-        aula203 = new Room("Aula de Programacion.\n" + "Los alumnos parecen estresados y abatidos.\n", null);
+                          + "Hay un par de repetidores que parecen abrumados por la tarea que les ha mandado Roberto.\n");             
+        aula203 = new Room("Aula de Programacion.\n" + "Los alumnos parecen estresados y abatidos.\n");
         
         // Vincular salidas:
         bachiller.setExit("east", pasillo);
@@ -66,7 +66,12 @@ public class Game  {
         aula202.setExit("northwest",fp);
         aula202.setExit("south",aula203);
         aula203.setExit("east",aula202);
-        aula203.setExit("west",fp);      
+        aula203.setExit("west",fp); 
+        
+        // Anadir objetos
+        pasillo.setItem("Alarma", new Item("Alarma de incendios", 100));
+        aula201.setItem("Esqueleto", new Item("Esqueleto de repetidor", 80));
+        
         
         // Establece la habitacion inicial:
         currentRoom = pasillo;
