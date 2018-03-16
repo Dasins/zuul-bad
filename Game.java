@@ -22,6 +22,8 @@ public class Game  {
     private Parser parser;
     // Habitacion actual.
     private Room currentRoom;
+    // Ultima habitacion.
+    private Room lastRoom;
         
     /**
      * Crea el juego e inicializa su mapa interno.
@@ -29,6 +31,7 @@ public class Game  {
     public Game() {
         createRooms();
         parser = new Parser();
+        lastRoom = null;
     }
 
     /**
@@ -145,6 +148,9 @@ public class Game  {
         else if (commandWord.equals("eat")) {
             eat();
         }
+        else if (commandWord.equals("back")) {
+            back();
+        }
 
         return wantToQuit;
     }
@@ -186,11 +192,24 @@ public class Game  {
             System.out.println("There is no door!");
         }
         else {
+            lastRoom = currentRoom;
             currentRoom = nextRoom;
             printLocationInfo();
         }
     }
-
+    
+    /**
+     * Mueve al personaje a la ultima habitacion visitada, si el personaje no se ha cambiado de sala o, ya ha regresado
+     * a la habitacion anterior no hace nada.
+     */
+    private void back() {
+        if (lastRoom != null) {
+            currentRoom = lastRoom;
+            printLocationInfo();
+            lastRoom = null;
+        }
+    }
+    
     /** 
      * "Quit" was entered. Check the rest of the command to see
      * whether we really quit the game.
@@ -211,7 +230,7 @@ public class Game  {
      * Muestra la informacion de la habitacion actual.
      */
     private void look() {
-        System.out.println(currentRoom.getLongDescription());
+        printLocationInfo();
     }
     
     /**
