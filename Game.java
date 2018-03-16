@@ -284,6 +284,7 @@ public class Game  {
                 } 
                 else {
                     items.put(item.getID(),item);
+                    cargaActual += item.getPeso(); 
                 }
             }
         } 
@@ -306,7 +307,8 @@ public class Game  {
             }
             else {
                 currentRoom.setItem(item);
-                items.remove(item);
+                items.remove(nombreItem);
+                cargaActual -= item.getPeso();
             }
         } 
     }
