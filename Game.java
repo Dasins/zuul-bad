@@ -62,7 +62,7 @@ public class Game  {
                           + "que requiere de una llave para funcionar.\n");              
         fp = new Room("Pasillo de FP.\n" + "La zona esta desierta, pero se escucha actividad en las aulas.\n");
         aula201 = new Room("Aula de Examenes.\n" + "Un escalofrio recorre tu espalda.\n"
-                          + "No puedes evitar sentirte vigilado" 
+                          + "No puedes evitar sentirte vigilado\n" 
                           +  "por las cientos de almas que han sido suspendidas entre estos muros.\n");            
         aula202 = new Room("Aula de Segundo.\n" 
                           + "Hay un par de repetidores que parecen abrumados por la tarea que les ha mandado Roberto.\n");             
@@ -84,8 +84,12 @@ public class Game  {
         
         // Anadir objetos
         pasillo.setItem(new Item("Alarma de incendios", 1000));
-        aula201.setItem(new Item("Esqueleto de repetidor", 80));
+        pasillo.setItem(new Item("Ascensor", 30000));
+        aula201.setItem(new Item("Esqueleto de repetidor",60));
         aula201.setItem(new Item("Examen de redes", 10));
+        aula201.setItem(new Item("Lapicero usado", 20));
+        aula203.setItem(new Item("Movil del Felegado",20));
+        aula203.setItem(new Item("Bicicleta de Bayon",60));
         
         
         // Establece la habitacion inicial:
@@ -281,6 +285,7 @@ public class Game  {
             else {
                 if(cargaActual + item.getPeso() > cargaMax) {
                     System.out.println("Demasiado peso, no puedes con ello");
+                    currentRoom.setItem(item);
                 } 
                 else {
                     items.put(item.getID(),item);
@@ -317,6 +322,7 @@ public class Game  {
      * Imprime todos los items del inventario.
      */
     private void items() {
+        System.out.println(cargaActual +"/" + cargaMax);        
         for (Map.Entry<String, Item> entries : items.entrySet()) {
             System.out.println(entries.getValue().getInfo());
         }

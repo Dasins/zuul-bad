@@ -134,4 +134,17 @@ public class Room
         }
         return retorno;
     }
+    
+    /**
+     * Devuelve el item contenido por parametro si existe en la habitacion o null en cualquier otro caso.
+     * @param nombreItem El nombre del item buscado.
+     * @return Devuelve el item contenido por parametro si existe en la habitacion o null en cualquier otro caso.
+     */
+    public Item getItem(String nombreItem) {
+        Item item = null;
+        if (objetos.containsKey(nombreItem) ) {
+            item = objetos.get(nombreItem);
+        }
+        return item;
+    }
 }
