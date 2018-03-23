@@ -16,13 +16,14 @@ public class Game  {
     private Parser parser;
     private Room initialRoom;
     private Character character;
+    private static final int MAX_CARGO = 100;
         
     /**
      * Crea el juego e inicializa su mapa interno.
      */
     public Game() {
         createRooms();
-        character = new Character("player1", initialRoom);
+        character = new Character("player1", initialRoom, MAX_CARGO);
         parser = new Parser();
     }
 

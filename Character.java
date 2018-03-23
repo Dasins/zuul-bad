@@ -21,6 +21,10 @@ public class Character {
     private Stack<Room> roomLog;
     // Inventario del personaje.
     private HashMap<String, Item> inventory;
+    // Carga maxima del peronaje.
+    private int maxCargo;
+    // Carga actual del personaje.
+    private int actualCargo;
     
     /**
      * Constructor
@@ -30,11 +34,13 @@ public class Character {
      * @param name El nombre del personaje.
      * @param startRoom La sala donde aparecera el personaje.
      */
-    public Character(String name, Room startRoom) {
+    public Character(String name, Room startRoom, int maxCargo) {
         this.name = name;
         currentRoom = startRoom;
         roomLog = new Stack<>();
         inventory = new HashMap<>();
+        this.maxCargo = maxCargo;
+        actualCargo = 0;
     }
     
     /**
@@ -101,9 +107,24 @@ public class Character {
      */
     public void take(String itemName) {
        Item item = currentRoom.getItem(itemName);
-       if (item != null && item.isUsable()) {
-           currentRoom.removeItem(itemName);
-           inventory.put(item.name(), item);
+       if (item != null) {
+           if (item.isUsable()) {
+               if (item.weight() + actualCargo <= maxCargo) { 
+                   currentRoom.removeItem(itemName);
+                   inventory.put(item.name(), item);
+                   actualCargo += item.weight();
+                   System.out.println("Has recogido [" + item.name() + "]");
+               }
+               else {
+                   System.out.println("El objeto pesa demasiado");
+               }
+           }
+           else {
+               System.out.println("El objeto no se puede recoger");
+           }
+       }
+       else {
+           System.out.println("No hay nada asi en la sala actual.");
        }
     }
    
@@ -111,6 +132,7 @@ public class Character {
      * Muestra por pantalla todos los objetos del inventario.
      */
     public void items() {
+        System.out.println(actualCargo + "/" + maxCargo);
         for (Item item :  inventory.values()) {
             System.out.println(item.info());
         }
@@ -126,6 +148,13 @@ public class Character {
        if (item != null) {
            inventory.remove(itemName);
            currentRoom.addItem(item);
+           actualCargo -= item.weight();
+           System.out.println("Has depositado [" + item.name() + "] en [" + currentRoom.name() + "]");
+       }
+       else {
+           System.out.println("No tienes ese objeto");
        }
     }
+    
+    
 }
