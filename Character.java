@@ -101,7 +101,7 @@ public class Character {
      */
     public void take(String itemName) {
        Item item = currentRoom.getItem(itemName);
-       if (item != null) {
+       if (item != null && item.isUsable()) {
            currentRoom.removeItem(itemName);
            inventory.put(item.name(), item);
        }

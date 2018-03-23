@@ -84,4 +84,12 @@ public class Item {
     public String info() {
         return "[" + name.toUpperCase() + "]:\n" + description + "\n" + weight;
     }
+    
+    /**
+     * Devuelve true si el objeto es manipuable y false si no.
+     * @return Devuelve true si el objeto es manipuable y false si no.
+     */
+    public boolean isUsable() {
+        return usable;
+    }
 }
