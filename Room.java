@@ -147,4 +147,20 @@ public class Room
         return refund;
     }
 
+    /**
+     * Busca un objeto en la sala y lo devuelve, si no existe, devuelve null.
+     * @param itemName El nombre del objeto buscado.
+     * @return Devuelve el objeto buscado o, null si no existe.
+     */
+    public Item getItem(String itemName) {
+        return items.get(itemName);
+    }
+    
+    /**
+     * Elimina el objeto buscado de la sala, si no existe, no hace nada.
+     * @param itemName El nombre del objeto buscado.
+     */
+    public void removeItem(String itemName) {
+        items.remove(itemName);
+    }
 }

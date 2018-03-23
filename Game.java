@@ -86,6 +86,18 @@ public class Game  {
         initialRoom = pasillo;
     }
     
+    /**
+     * Comprueba si el comando tiene segunda palabra.
+     * @param commands El commando a comprobar.
+     */
+    private boolean isAComplexCommand(Command command) {
+        Boolean refund = true;
+        if(!command.hasSecondWord()) {
+            refund = false;
+            System.out.println("Este comando requiere de una segunda palabra");
+        }
+        return refund;
+    }
     
     /**
      * Imprime la descripcion de la habitacion actual y sus salidas.
@@ -141,7 +153,9 @@ public class Game  {
             printHelp();
         }
         else if (commandWord.equals("go")) {
-            goRoom(command);
+            if ( isAComplexCommand(command) ) {
+                character.moveTo(command.getSecondWord());
+            }
         }
         else if (commandWord.equals("quit")) {
             wantToQuit = quit(command);
@@ -174,26 +188,7 @@ public class Game  {
         System.out.println("Los comandos disponibles son:");
         System.out.println(parser.getAllCommands());
     }
-
-    /** 
-     * Try to go in one direction. If there is an exit, enter
-     * the new room, otherwise print an error message.
-     */
-    private void goRoom(Command command) 
-    {
-        if(!command.hasSecondWord()) {
-            // if there is no second word, we don't know where to go...
-            System.out.println("Go where?");
-            return;
-        }
-
-        String direction = command.getSecondWord();
-
-        // Try to leave current room.
-        character.moveTo(direction);
-    }
-    
-    
+        
     /** 
      * "Quit" was entered. Check the rest of the command to see
      * whether we really quit the game.

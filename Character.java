@@ -1,4 +1,5 @@
 import java.util.Stack;
+import java.util.HashMap;
 
 /**
  * Representa un personaje del mundo del juego.
@@ -18,6 +19,8 @@ public class Character {
     private Room currentRoom;
     // Historial de salas visitadas.
     private Stack<Room> roomLog;
+    // Inventario del personaje.
+    private HashMap<String, Item> inventory;
     
     /**
      * Constructor
@@ -31,6 +34,7 @@ public class Character {
         this.name = name;
         currentRoom = startRoom;
         roomLog = new Stack<>();
+        inventory = new HashMap<>();
     }
     
     /**
@@ -88,6 +92,19 @@ public class Character {
         if (!roomLog.isEmpty()) {
             currentRoom = roomLog.pop();
         }
+    }
+    
+    /**
+     * Coge el objeto indicado de la sala y lo deposita en el inventario del personaje.
+     * Al coger un objeto, este se elimina de la sala.
+     * @param itemName El nombre del objeto que se quiere coger.
+     */
+    public void take(String itemName) {
+       Item item = currentRoom.getItem(itemName);
+       if (item != null) {
+           currentRoom.removeItem(itemName);
+           inventory.put(item.name(), item);
+       }
     }
    
 }
