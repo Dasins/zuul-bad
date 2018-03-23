@@ -1,4 +1,5 @@
 import java.util.Stack;
+import java.util.HashMap;
 
 /**
  * Representa un personaje del mundo del juego.
@@ -18,6 +19,12 @@ public class Character {
     private Room currentRoom;
     // Historial de salas visitadas.
     private Stack<Room> roomLog;
+    // Inventario del personaje.
+    private HashMap<String, Item> inventory;
+    // Carga maxima del peronaje.
+    private int maxCargo;
+    // Carga actual del personaje.
+    private int actualCargo;
     
     /**
      * Constructor
@@ -27,10 +34,13 @@ public class Character {
      * @param name El nombre del personaje.
      * @param startRoom La sala donde aparecera el personaje.
      */
-    public Character(String name, Room startRoom) {
+    public Character(String name, Room startRoom, int maxCargo) {
         this.name = name;
         currentRoom = startRoom;
         roomLog = new Stack<>();
+        inventory = new HashMap<>();
+        this.maxCargo = maxCargo;
+        actualCargo = 0;
     }
     
     /**
@@ -89,5 +99,62 @@ public class Character {
             currentRoom = roomLog.pop();
         }
     }
+    
+    /**
+     * Coge el objeto indicado de la sala y lo deposita en el inventario del personaje.
+     * Al coger un objeto, este se elimina de la sala.
+     * @param itemName El nombre del objeto que se quiere coger.
+     */
+    public void take(String itemName) {
+       Item item = currentRoom.getItem(itemName);
+       if (item != null) {
+           if (item.isUsable()) {
+               if (item.weight() + actualCargo <= maxCargo) { 
+                   currentRoom.removeItem(itemName);
+                   inventory.put(item.name(), item);
+                   actualCargo += item.weight();
+                   System.out.println("Has recogido [" + item.name() + "]");
+               }
+               else {
+                   System.out.println("El objeto pesa demasiado");
+               }
+           }
+           else {
+               System.out.println("El objeto no se puede recoger");
+           }
+       }
+       else {
+           System.out.println("No hay nada asi en la sala actual.");
+       }
+    }
    
+    /**
+     * Muestra por pantalla todos los objetos del inventario.
+     */
+    public void items() {
+        System.out.println(actualCargo + "/" + maxCargo);
+        for (Item item :  inventory.values()) {
+            System.out.println(item.info());
+        }
+    }
+    
+    /**
+     * Coge el objeto indicado del inventario y lo deposita en la sala actual.
+     * Al coger un objeto, este se elimina del inventario.
+     * @param itemName El nombre del objeto que se quiere coger.
+     */
+    public void drop(String itemName) {
+       Item item = inventory.get(itemName);
+       if (item != null) {
+           inventory.remove(itemName);
+           currentRoom.addItem(item);
+           actualCargo -= item.weight();
+           System.out.println("Has depositado [" + item.name() + "] en [" + currentRoom.name() + "]");
+       }
+       else {
+           System.out.println("No tienes ese objeto");
+       }
+    }
+    
+    
 }
