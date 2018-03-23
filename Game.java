@@ -169,6 +169,9 @@ public class Game  {
         else if (commandWord.equals("back")) {
             character.back();
         }
+        else if (commandWord.equals("items")) {
+            character.items();
+        }
 
         return wantToQuit;
     }

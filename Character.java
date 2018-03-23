@@ -107,4 +107,12 @@ public class Character {
        }
     }
    
+    /**
+     * Muestra por pantalla todos los objetos del inventario.
+     */
+    public void items() {
+        for (Item item :  inventory.values()) {
+            System.out.println(item.info());
+        }
+    }
 }
