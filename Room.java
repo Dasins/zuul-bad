@@ -3,121 +3,148 @@ import java.util.Map;
 import java.util.Iterator;
 
 /**
- * Class Room - a room in an adventure game.
+ * Representa una sala del escenario del juego.
  *
- * This class is part of the "World of Zuul" application. 
- * "World of Zuul" is a very simple, text based adventure game.  
+ * Room pertenece a la aplicacion zuul-dani. 
  *
- * A "Room" represents one location in the scenery of the game.  It is 
- * connected to other rooms via exits.  The exits are labelled north, 
- * east, south, west.  For each direction, the room stores a reference
- * to the neighboring room, or null if there is no exit in that direction.
+ * Una sala es una localizacion dentro del escenario del juego.
+ * Las salas conectan con otras mediante salidas (referencias a otras salas).
+ * Las salas son capaces de alojar objetos.
  * 
- * @author  Michael KÃ¶lling and David J. Barnes
- * @version 2011.07.31
+ * @author  d4sºns
+ * @version 2018.03.23
  */
 public class Room 
 {
+    // El nombre de la sala.
+    private String name;
+    // La descripcion de la sala.
     private String description;
-    private HashMap<String, Room> salidas;
-    private HashMap<String, Item> objetos; 
+    // El conjunto de salas y, su direccion asociada, con las que conecta esta sala. 
+    private HashMap<String, Room> neighbors;
+    // Los objetos que hay en la sala.
+    private HashMap<String, Item> items; 
 
     /**
-     * Create a room described "description". Initially, it has
-     * no exits. "description" is something like "a kitchen" or
-     * "an open court yard".
+     * Constructor
+     * Para crear una sala es necesario indicar un nombre unico e identificativo y una descripcion de la misma.
+     * Por defecto, las salas creadas no tendran salidas.
      * @param description The room's description.
      * @param item El item contenido en esta sala, null si no contiene nada.
      */
-    public Room(String description) 
-    {
+    public Room(String name, String description) {
         this.description = description;
-        salidas = new HashMap<>();
-        objetos = new HashMap<>();
+        neighbors = new HashMap<>();
+        items = new HashMap<>();
     }
     
     /**
-     * Devuelve la habitacion asociada a la direccion introducida por parametro o, null, en cualquier otro caso.
-     * @param direccion Una cadena que contiene una direccion cardinal.
-     * @return Devuelve la habitacion asociada a la direccion introducida por parametro o, null, en cualquier otro caso.
+     * Busca una salida en la direccion indicada por parametro.
+     * Si existe una salida, devuelve la sala que se encuentra al otro lado. En cualquier otro caso devuelve null.
+     * 
+     * @param direction La direccion en la que se busca una salida.
+     * @return Si existe una salida, devuelve la sala que se encuentra al otro lado. En cualquier otro caso devuelve null.
      */
-    public Room getExit(String direccion) {
-        Room retorno = null;
-        boolean buscando = true;
-        Iterator<Map.Entry<String, Room>> entries = salidas.entrySet().iterator();
-        while (entries.hasNext() && buscando) {
-            Map.Entry<String, Room> entry = entries.next();
-            if (direccion.equals(entry.getKey())) {
-               retorno = entry.getValue();
-               buscando = false;
+    public Room getExit(String direction) {
+        Room refund = null;
+        boolean searching = true;
+        Iterator<Map.Entry<String, Room>> rooms = neighbors.entrySet().iterator();
+        while (rooms.hasNext() && searching) {
+            Map.Entry<String, Room> room = rooms.next();
+            if (direction.equals(room.getKey())) {
+               refund = room.getValue();
+               searching = false;
             }
         }
-        return retorno; 
+        return refund; 
     }
     
     /**
-     * Anade un objeto a la sala.
-     * @param nombre El nombre del objeto.
-     * @param item El objeto que sera anadido a la sala.
+     * Ubicar el objeto indicado en la sala.
+     * Si el objeto ya existe, lo reemplaza.
+     * @param item El objeto a colocar en la sala.
      */
-    public void setItem(String nombre, Item item) {
-        objetos.put(nombre, item);
+    public void addItem(Item item) {
+        items.put(item.name(), item);
     }
     
     /**
-     * Crea una salida en la direccion indicada hacia la habitacion especificada. 
-     * Si la direccion ya conecta con otro sala, la sobreescribe (se da por hecho que se introducen direcciones validas).
+     * Crea una salida en la direccion indicada hacia la sala indicada.
+     * Si ya existe una salida en esa direccion, la sobreescribe.
      * 
-     * @param direccion La direccion en la que se encuentra la salida.
-     * @param sala La habitacion con la que conecta la salida.
+     * @param direction La direccion en la se quiere crear la salida.
+     * @param room La sala con la que se quiere conectar.
      */
-    public void setExit(String direccion, Room salaVecina) {
-        salidas.put(direccion, salaVecina);
+    public void addExit(String direction, Room room) {
+        neighbors.put(direction, room);
     }
-
+    
     /**
-     * @return The description of the room.
+     * Devuelve la descripcion de la sala.
+     * @return Devuelve la descripcion de la sala.
      */
-    public String getDescription()
-    {
+    public String description() {
         return description;
     }
     
     /**
-     * Devuelve una cadena con la descripcion de todos los objetos de la sala o una cadena vacia si no ha objetos.
-     * @return Devuelve una cadena con la descripcion de todos los objetos de la sala o una cadena vacia si no ha objetos.
+     * Devuelve el nombre de la sala.
+     * @return Devuelve el nombre de la sala.
      */
-    public String getAllItems() {
-        String retorno = "";
-        for (Map.Entry<String, Item> entries : objetos.entrySet()) {
-                retorno += entries.getValue().getInfo() + "\n";
-        }
-        return retorno;
+    public String name() {
+        return name;
     }
     
     /**
-     * Return a description of the room's exits.
+     * Devuelve la informacion de los objetos alojados en la sala o null, si no hay objetos en la sala. 
+     * @return Devuelve la informacion de los objetos alojados en la sala o null, en cualquier otro caso. 
+     */
+    public String itemsInfo() {
+        String refund = null;
+        for (Item item : items.values()) {
+                refund += item.info() + "\n";
+        }
+        return refund;
+    }
+    
+    /**
+     * Devuelve la informacion de las salidas disponibles en la sala, o null, si no hay salidas en la sala.
      * For example: "Exits: north east west"
      *
-     * @ return A description of the available exits.
+     * @return Devuelve la informacion de las salidas disponibles en la sala, o null, si no hay salidas en la sala.
      */
-    public String getExitString() {
-        String retorno = "Exits: ";
-        for (String key : salidas.keySet()) {
-                retorno += key + " ";
+    public String exitsInfo() {
+        String refund = null;
+        if (!neighbors.isEmpty()) {
+            for (String key : neighbors.keySet()) {
+                    refund += "[" + key + "] ";
+            }
+            refund = "Exits:\n" + refund + "\n";
         }
-        retorno += "\n";
-        return retorno;
+        return refund;
     }
     
     /**
-     * Return a long description of this room, of the form:
-     * You are in the 'name of room'
-     * Exits: north west southwest
-     * @return A description of the room, including exits.
+     * Devuelve la informacion sobre la sala.
+     * @return Devuelve la informacion sobre la sala.
      */
-    public String getLongDescription() {
-        return description + "\n" + getAllItems() + "\n" +  getExitString();
+    public String roomInfo() {
+        return "[" + name.toUpperCase() + "] " + ":\n" + description;
+    }
+    
+    /**
+     * Devuelve toda la informacion disponible sobre la sala.
+     * @return Devuelve toda la informacion disponible sobre la sala.
+     */
+    public String info() {
+        String refund = roomInfo();
+        if (exitsInfo() != null) {
+            refund += "/n" + roomInfo();
+        }
+        if (itemsInfo() != null) {
+            refund += "/n" + itemsInfo();
+        }
+        return refund;
     }
 
 }
