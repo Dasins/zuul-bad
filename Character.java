@@ -115,4 +115,17 @@ public class Character {
             System.out.println(item.info());
         }
     }
+    
+    /**
+     * Coge el objeto indicado del inventario y lo deposita en la sala actual.
+     * Al coger un objeto, este se elimina del inventario.
+     * @param itemName El nombre del objeto que se quiere coger.
+     */
+    public void drop(String itemName) {
+       Item item = inventory.get(itemName);
+       if (item != null) {
+           inventory.remove(itemName);
+           currentRoom.addItem(item);
+       }
+    }
 }

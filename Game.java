@@ -172,6 +172,16 @@ public class Game  {
         else if (commandWord.equals("items")) {
             character.items();
         }
+        else if (commandWord.equals("take")) {
+            if ( isAComplexCommand(command) ) {
+                character.take(command.getSecondWord());
+            }
+        }
+        else if (commandWord.equals("drop")) {
+            if ( isAComplexCommand(command) ) {
+                character.drop(command.getSecondWord());
+            }
+        }
 
         return wantToQuit;
     }
