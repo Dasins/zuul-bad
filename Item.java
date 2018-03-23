@@ -1,48 +1,87 @@
 
 /**
- * Clase que modela objetos que simulan objetos de nuestro mundo.
+ * Representa un objeto del mundo del juego.
+ * 
+ * Item pertenece a la aplicacion zuul-dani.
+ * 
+ * Los objetos tiene un peso y pueden ser manipuables o no.
  * 
  * @author d4s1ns
  * @version 2018/03/12
  */
 public class Item {
-    // Nombre
-    String nombre;
-    // Peso
-    int peso;
+    // Nombre del objeto.
+    String name;
+    // Descripcion del objeto.
+    String description;
+    // Peso del objeto.
+    int weight;
+    // Determina si se puede manipular o no. (True, manipulable).
+    boolean usable;
     
     /**
-     * Constructor de objetos Item
+     * Constructor
      * 
-     * @param nombre El nombre del objeto, por ejemplo "cofre".
-     * @param peso El peso del objeto en cuestion.
+     * Construye objetos que por defecto son manipuables.
+     * Para crear un objeto se debe especificar un nombre unico e identificativo, la descripcion del objeto y su peso.
+     * 
+     * @param name El nombre del objeto.
+     * @param weight El peso del objeto en cuestion.
      */
-    public Item(String nombre, int peso) {
-        this.nombre = nombre;
-        this.peso = peso;
+    public Item(String name, String description, int weight) {
+        this.name = name;
+        this.description = description;
+        this.weight = weight;
+        usable = true;
     }
     
     /**
-     * Devuelve el nombre del item.
-     * @return Devuelve el nombre del item.
+     * Constructor
+     * 
+     * Construye objetos personalizados
+     * Para crear un objeto se debe especificar un nombre unico e identificativo, la descripcion del objeto su peso
+     * y si es manipulable.
+     * 
+     * 
+     * @param name El nombre del objeto.
+     * @param weight El peso del objeto en cuestion.
      */
-    public String getNombre() {
-        return nombre;
+    public Item(String name, String description, int weight, boolean usable) {
+        this.name = name;
+        this.description = description;
+        this.weight = weight;
+        this.usable = usable;
     }
     
     /**
-     * Devuelve el peso del item.
-     * @return Devuelve el peso del item.
+     * Devuelve el nombre del objeto.
+     * @return Devuelve el nombre del objeto.
      */
-    public int getItem() {
-        return peso;
+    public String name() {
+        return name;
     }
     
     /**
-     * Devuelve una cadena con toda la informacion del item.
-     * @return Devuelve una cadena con toda la informacion del item.
+     * Devuelve la descripcion del objeto.
+     * @return Devuelve la descripcion del objeto.
      */
-    public String getInfo() {
-        return nombre + " peso: " + peso;
+    public String description() {
+        return description;
+    }
+    
+    /**
+     * Devuelve el peso del objeto.
+     * @return Devuelve el peso del objeto.
+     */
+    public int weight() {
+        return weight;
+    }
+    
+    /**
+     * Devuelve toda la informacion del objeto.
+     * @return Devuelve toda la informacion del objeto.
+     */
+    public String info() {
+        return "[" + name.toUpperCase() + "]:\n" + description + "\n" + weight;
     }
 }

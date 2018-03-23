@@ -1,20 +1,12 @@
 import java.util.Stack;
+import java.util.HashMap;
 
 /**
- *  This class is the main class of the "World of Zuul" application. 
- *  "World of Zuul" is a very simple, text based adventure game.  Users 
- *  can walk around some scenery. That's all. It should really be extended 
- *  to make it more interesting!
+ *  Representa la interfaz con la que se comunicara el jugador.
  * 
- *  To play this game, create an instance of this class and call the "play"
- *  method.
+ *  Para jugar, crea una instancia de esta clase.
  * 
- *  This main class creates and initialises all the others: it creates all
- *  rooms, creates the parser and starts the game.  It also evaluates and
- *  executes the commands that the parser returns.
  * 
- * @author  Michael Kölling and David J. Barnes
- * @version 2011.07.31
  * @author  D4s1ns
  * @version 2018.03.13
  */
@@ -22,78 +14,90 @@ import java.util.Stack;
 public class Game  {
     // Analizador de sintaxis.
     private Parser parser;
-    // Habitacion actual.
-    private Room currentRoom;
-    // Ultima habitacion.
-    private Stack<Room> roomLog;
+    private Room initialRoom;
+    private Character character;
         
     /**
      * Crea el juego e inicializa su mapa interno.
      */
     public Game() {
         createRooms();
+        character = new Character("player1", initialRoom);
         parser = new Parser();
-        roomLog = new Stack<>();
     }
 
     /**
      * Crea todas las habitaciones y establece como se unen entre ellas.
      */
     private void createRooms() {
-        // Habitaciones:
         Room bachiller, pasillo, fp, aula201, aula202, aula203;
         
-        // Creacion de las habitaciones:
-        bachiller = new Room("Pasillo de Bachiller.\n"
-                            + "La salida de emergencia y las aulas de esta zona estan cerradas.\n");               
-        pasillo = new Room("Pasillo principal.\n" 
-                          + "En los extremos de la sala se encuentran: el pasillo de FP y el pasillo de Bachiller.\n" 
-                          + "En el medio, puedes ver las escaleras que conducen a la primera planta.\n" 
-                          + "Al fondo de la sala, se encuentran los aseos (que parecen fuera de servicio) y, el ascensor\n"
-                          + "que requiere de una llave para funcionar.\n");              
-        fp = new Room("Pasillo de FP.\n" + "La zona esta desierta, pero se escucha actividad en las aulas.\n");
-        aula201 = new Room("Aula de Examenes.\n" + "Un escalofrio recorre tu espalda.\n"
-                          + "No puedes evitar sentirte vigilado" 
-                          +  "por las cientos de almas que han sido suspendidas entre estos muros.\n");            
-        aula202 = new Room("Aula de Segundo.\n" 
-                          + "Hay un par de repetidores que parecen abrumados por la tarea que les ha mandado Roberto.\n");             
-        aula203 = new Room("Aula de Programacion.\n" + "Los alumnos parecen estresados y abatidos.\n");
+        String description = "Las aulas estan cerradas y la salida de emergencia, bloqueada.\n" +
+                             "No hay nada que hacer aqui aqui";
+        String name = "el pasillo de bachiller";
+        bachiller = (new Room(name, description));
+     
+        description = "Te encuentras entre el pasillo de FP y el de Bachiller.\n" + 
+                      "Hay unos aseos, pero parecen fuera de servicio";
+        name = "el pasillo principal"; 
+        pasillo =new Room(name, description);
+
+        description = "Se puede escuchar ruido en el aula 203 Las clase de Programacion ya  ha comenzado.";
+        name = "el pasillo de fp";
+        fp = new Room(name, description);
+
+        
+        description = "Un escalofrio te recorre.\n" +
+                      "No puedes sentir compasion por los cientos de almas suspensas en este aula";
+        name = "aula de examenes";
+        aula201 = new Room(name, description);
+
+        
+        description = "Hay un par de repetidores abrumados por la tarea de Roberto.\n" +
+                      "Una de las ventanas esta abierta y parece conducir al aula 203.";
+        name = "aula de dam2";
+        aula202 = new Room(name, description);
+
+        
+        description = "Los alumnos parecen estresados y abatidos\n" +
+                      "Una de las ventanas esta abierta y parece conducir al aula 202.\n";
+        name = "aula de dam1";
+        aula203 = new Room(name, description);
         
         // Vincular salidas:
-        bachiller.setExit("east", pasillo);
-        pasillo.setExit("east", fp);
-        pasillo.setExit("west", bachiller);
-        fp.setExit("east", aula203);
-        fp.setExit("south", aula201);
-        fp.setExit("southeast", aula202);
-        fp.setExit("west", pasillo);
-        aula201.setExit("north", fp);
-        aula202.setExit("northwest",fp);
-        aula202.setExit("south",aula203);
-        aula203.setExit("east",aula202);
-        aula203.setExit("west",fp); 
+        bachiller.addExit("east", pasillo);
+        pasillo.addExit("east", fp);
+        pasillo.addExit("west", bachiller);
+        fp.addExit("east", aula203);
+        fp.addExit("south", aula201);
+        fp.addExit("southeast", aula202);
+        fp.addExit("west", pasillo);
+        aula201.addExit("north", fp);
+        aula202.addExit("northwest",fp);
+        aula202.addExit("south",aula203);
+        aula203.addExit("east",aula202);
+        aula203.addExit("west",fp); 
         
         // Anadir objetos
-        pasillo.setItem("Alarma", new Item("Alarma de incendios", 100));
-        aula201.setItem("Esqueleto", new Item("Esqueleto de repetidor", 80));
+        pasillo.addItem(new Item("alarma", "Una tradicional alarma de incendios", 100));
+        aula201.addItem(new Item("esqueleto", "Pertenecio a un repetidor que jamas aprobo redes", 80));
         
-        
-        // Establece la habitacion inicial:
-        currentRoom = pasillo;
+        // Establece la habitacion inicial
+        initialRoom = pasillo;
     }
+    
     
     /**
      * Imprime la descripcion de la habitacion actual y sus salidas.
      */
-    private void printLocationInfo() {
-        System.out.println("\nEstas en el " + currentRoom.getLongDescription());
+    private void info() {
+        character.look();
     }
 
     /**
      *  Main play routine.  Loops until end of play.
      */
-    public void play() 
-    {            
+    public void play() {            
         printWelcome();
 
         // Enter the main command loop.  Here we repeatedly read commands and
@@ -104,20 +108,18 @@ public class Game  {
             Command command = parser.getCommand();
             finished = processCommand(command);
         }
-        System.out.println("Thank you for playing.  Good bye.");
+        System.out.println("Gracias por jugar. Hasta luego!");
     }
 
     /**
      * Print out the opening message for the player.
      */
-    private void printWelcome()
-    {
+    private void printWelcome() {
         System.out.println();
-        System.out.println("Welcome to the World of Zuul!");
-        System.out.println("World of Zuul is a new, incredibly boring adventure game.");
-        System.out.println("Type 'help' if you need help.");
+        System.out.println("Bienvenido a 'Zuul-Dani':");
+        System.out.println("Escribe 'help' si necesitas ayuda.");
         System.out.println();
-        printLocationInfo();
+        info();
     }
 
     /**
@@ -145,13 +147,13 @@ public class Game  {
             wantToQuit = quit(command);
         }
         else if (commandWord.equals("look")) {
-            look();
+            character.look();
         }
         else if (commandWord.equals("eat")) {
-            eat();
+            character.eat();
         }
         else if (commandWord.equals("back")) {
-            back();
+            character.back();
         }
 
         return wantToQuit;
@@ -188,28 +190,9 @@ public class Game  {
         String direction = command.getSecondWord();
 
         // Try to leave current room.
-        Room nextRoom = currentRoom.getExit(direction);
-
-        if (nextRoom == null) {
-            System.out.println("There is no door!");
-        }
-        else {
-            roomLog.push(currentRoom);
-            currentRoom = nextRoom;
-            printLocationInfo();
-        }
+        character.moveTo(direction);
     }
     
-    /**
-     * Mueve al personaje a la ultima habitacion visitada, si el personaje no se ha cambiado de sala o, ya ha regresado
-     * a la habitacion anterior no hace nada.
-     */
-    private void back() {
-        if (!roomLog.empty()) {
-            currentRoom = roomLog.pop();
-            printLocationInfo();
-        }
-    }
     
     /** 
      * "Quit" was entered. Check the rest of the command to see
@@ -227,17 +210,4 @@ public class Game  {
         }
     }
     
-    /**
-     * Muestra la informacion de la habitacion actual.
-     */
-    private void look() {
-        printLocationInfo();
-    }
-    
-    /**
-     * No hace mucho aun
-     */
-    private void eat() {
-        System.out.println("Acabas de comer, aun no tienes hambre");
-    }
 }
