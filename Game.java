@@ -25,6 +25,8 @@ public class Game  {
     private Character character;
     // Analizador de sintaxis.
     private Parser parser;
+    
+    private boolean endable;
         
     /**
      * Constructor - Crea e inizializa el escenario, el analizador de sintaxis y el personaje.
@@ -34,6 +36,7 @@ public class Game  {
         builder.build(INITIAL_MAP);
         character = new Character("John Doe", builder.getSpawnRoom(), MAX_CARGO);
         parser = new Parser();
+        endable = false;
     }
     
     
@@ -105,6 +108,29 @@ public class Game  {
             else if (commandWord.equals("drop")) {
                 if (isComplex(command)) {
                     character.drop(command.getSecondWord());
+                }
+            }
+            else if (commandWord.equals("use")) {
+                if (isComplex(command)) {
+                    if(character.use(command.getSecondWord())) {
+                        builder.changeRoomDescription("el aula 203", "Todos han salido fuera al sonar la alarma.");
+                        System.out.println("La alarma de incendios esta sonando y la gente abandona el aula 203.");
+                        endable = true;
+                    }
+                }
+            }
+            else if (commandWord.equals("sit")) {
+                if (character.actualRoom().equals("el aula 203")) {
+                   if(endable) {
+                       System.out.println("Enhorabuena, has evadido la multa un dia mas.");
+                   }
+                   else {
+                       System.out.println("La mirada ardiente del Felegado se ha psoado sobre ti. GAME OVER");
+                   }
+                   wantToQuit = true;
+                }
+                else {
+                    System.out.println("Esta no es tu clase.");
                 }
             }
             System.out.println();

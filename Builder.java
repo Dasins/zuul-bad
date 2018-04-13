@@ -44,6 +44,7 @@ public class Builder {
     // Objetos del escenario.
     private HashMap<String, Item> items;
     
+    
     /**
      * Constructor - Crea e inicializa el constructor.
      */
@@ -137,7 +138,8 @@ public class Builder {
             Scanner sc = new Scanner(file);
             while (sc.hasNextLine()) {
                 String[] itemText = sc.nextLine().replace("\\n","\n").split(":");
-                items.put(itemText[0], new Item(itemText[0], itemText[1], Integer.parseInt(itemText[2]), Boolean.valueOf(itemText[3])));
+                items.put(itemText[0], new Item(itemText[0], itemText[1], Integer.parseInt(itemText[2]), 
+                                                Boolean.valueOf(itemText[3]), Boolean.valueOf(itemText[4])));
             }
             sc.close();
         }
@@ -197,7 +199,7 @@ public class Builder {
     }
     
     /**
-     * 
+     * Coloca los objetos de aparicion aleatoria en una sala aleatoria.
      */
     private void placeRandomItem() {
         try {          
@@ -220,5 +222,12 @@ public class Builder {
             e.printStackTrace();
         }      
     }
-    
+    /**
+     * Cambia la descripcion de una sala.
+     * @param roomName Nombre de la salama
+     * @param newDescription Nueva descripcion
+     */
+    public void changeRoomDescription(String roomName, String newDescription) {
+        rooms.get(roomName).setDescription(newDescription);
+    }
 }

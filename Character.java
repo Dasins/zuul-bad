@@ -99,6 +99,14 @@ public class Character {
         return "[" + name.toUpperCase() + "]:\nSala actual - " + currentRoom.toString() + "\n" + inventory(); 
     }
     
+    /**
+     * Devuelve el nombre de la habitacion actual
+     * @return Devuelve el nombre de la habitacion actual
+     */
+    public String actualRoom() {
+        return currentRoom.getName();
+    }
+    
     // ACCIONES DEL PERSONAJE.
     /**
      * El personaje retrocede a la ultima sala visitada - Trata de hacer retroceder al personaje a la ultima sala visitada. 
@@ -188,6 +196,30 @@ public class Character {
         else {
             System.out.println("No se ha encontrado [" + itemName + "] en la sala.");
         }
+    }
+    
+    /**
+     * El personaje usa el objeto indicado - Trata de usarse el objeto indicado.
+     * Se debe especificar el nombre del objeto. El objeto debe encontrarse en la sala o en el inventario. 
+     * @param itemName Nombre del objeto a utilizar.
+     */
+    public boolean use(String itemName) {
+        boolean refund = false;
+        Item item = null;
+        item = currentRoom.findItem(itemName);
+        if (item != null) {
+            inventory.get(itemName);
+            if (item != null && item.isUsable()) {
+                refund = true;
+            }
+            else{
+                System.out.println("[" + itemName + "] no tiene ningun uso]");
+            }
+        }
+        else {
+            System.out.println("No hay ningun [" + itemName + "] al alcance.]");
+        }
+        return refund;
     }
     
     // INUTILISMOS Y PRUEBAS

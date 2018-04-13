@@ -10,7 +10,7 @@
 public class CommandWords {
     // Lista de comandos conocidos.
     private static final String[] validCommands = {
-        "go", "quit", "help", "look", "take", "drop", "items"
+        "go", "quit", "help", "look", "take", "drop", "items", "use", "sit"
     };
 
     /**

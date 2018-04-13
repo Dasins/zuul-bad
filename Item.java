@@ -12,14 +12,16 @@
  */
 public class Item {
     // Determina si se puede recoger o no. Recogible - Verdadero, No Recogible - Falso.
-    boolean pickable;
+    private boolean pickable;
+    // Determina si el objeto tiene usos o no. Usable - Verdadero, No usable - Falso.
+    private boolean usable;
     // Peso del objeto.
-    int weight;
+    private int weight;
     
     // Descripcion del objeto.
-    String description;
+    private String description;
     // Nombre del objeto.
-    String name;
+    private String name;
 
     /**
      * Constructor - Crea un objeto indicando su nombre, su descripcion, su peso y si se puede recoger.
@@ -28,11 +30,12 @@ public class Item {
      * @param weight Peso del objeto.
      * @param usable Verdadero - Se puede recoger, Falso - No se puede recoger.
      */
-    public Item(String name, String description, int weight, boolean pickable) {
+    public Item(String name, String description, int weight, boolean pickable, boolean usable) {
         this.name = name;
         this.description = description;
         this.weight = weight;
         this.pickable = pickable;
+        this.usable = usable;
     }
     
     // INFORMACION DEL OBJETO.
@@ -66,6 +69,14 @@ public class Item {
      */
     public boolean isPickable() {
         return pickable;
+    }
+    
+    /**
+     * Devuelve 'true' si el objeto se puede recoger y 'false' si no.
+     * @return Devuelve 'true' si el objeto se puede recoger y 'false' si no.
+     */
+    public boolean isUsable() {
+        return usable;
     }
     
     /**

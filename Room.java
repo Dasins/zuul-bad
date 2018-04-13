@@ -143,4 +143,12 @@ public class Room {
     public void removeItem(String itemName) {
         items.remove(itemName);
     }
+    
+    /**
+     * Modifica la descripcion de la sala, nueva descripcion
+     * @param newDescription Nueva descripcion.
+     */
+    public void setDescription(String newDescription) {
+        description = newDescription;
+    }
 }
