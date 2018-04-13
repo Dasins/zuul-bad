@@ -73,7 +73,7 @@ public class Item {
      * @return Devuelve una cadena de texto con toda la informacion acerca del objeto.
      */
     public String toString() {
-        return "[" + name + "]:\n" + description + "\nPeso: " + weight + "\tUsable: " + pickable;
+        return "[" + name + "]:\n" + description + "\nPeso: " + weight + "\nRecogible: " + pickable;
     }
     
 }

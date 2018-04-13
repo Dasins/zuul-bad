@@ -121,6 +121,7 @@ public class Character {
         if (item != null) {
             inventory.remove(itemName);
             currentRoom.addItem(item);
+            cargo -= item.getWeight();
             System.out.println("Has depositado [" + itemName + "] en [" + currentRoom.getName() + "].");
         }
         else {
@@ -169,13 +170,19 @@ public class Character {
     public void pick(String itemName) {
         Item item = currentRoom.findItem(itemName);
         if (item != null) {
-            if (cargo + item.getWeight() <= maxCargo && item.isPickable()) {
-                currentRoom.removeItem(itemName);
-                inventory.put(item.getName(), item);
-                System.out.println("Se ha recogido [" + itemName + "]");
+            if(item.isPickable()) {
+                if (cargo + item.getWeight() <= maxCargo) {
+                    currentRoom.removeItem(itemName);
+                    inventory.put(item.getName(), item);
+                    cargo += item.getWeight();
+                    System.out.println("Se ha recogido [" + itemName + "]");
+                }
+                else {
+                    System.out.println("[" + itemName + "] pesa demasiado.");
+                }
             }
             else {
-                System.out.println("[" + itemName + "] pesa demasiado.");
+                System.out.println("No se puede recoger [" + itemName + "]");
             }
         }
         else {

@@ -28,7 +28,7 @@ public class Room {
      * @param name Nombre de la sala. Debe ser unico e identificativo.
      * @param description Descripcion de la sala.
      */
-    public Room(String id, String name, String description) {
+    public Room(String name, String description) {
         this.name = name;
         this.description = description;
         neighbors = new HashMap<>();
@@ -80,9 +80,9 @@ public class Room {
     public String items() {
         String refund = "";
         if (!items.isEmpty()) {
-            refund = "Objetos en la sala:\n";
+            refund = "Objetos en la sala:";
             for (Item item : items.values()) {
-                refund += item + "\n";
+                refund += "\n" + item + "\n";
             }
         }
         return refund;
@@ -101,7 +101,7 @@ public class Room {
      * @return Devuelve una cadena de texto con toda la informacion acerca de la sala.
      */
     public String toString() {
-        return "[" + name + "].\n\n" + description + "\n\n" + items() + "\n" + exits();
+        return "[" + name + "].\n" + description + "\n\n" + items() + "\n" + exits();
     }
     
     // OPERACIONES CON LA SALA
