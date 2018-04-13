@@ -1,73 +1,73 @@
 import java.util.Scanner;
 
 /**
- * This class is part of the "World of Zuul" application. 
- * "World of Zuul" is a very simple, text based adventure game.  
+ * Analizador de sintaxis.
  * 
- * This parser reads user input and tries to interpret it as an "Adventure"
- * command. Every time it is called it reads a line from the terminal and
- * tries to interpret the line as a two word command. It returns the command
- * as an object of class Command.
- *
- * The parser has a set of known command words. It checks user input against
- * the known commands, and if the input is not one of the known commands, it
- * returns a command object that is marked as an unknown command.
+ * Parser pertenece a la aplicacion 'sneak-in-class';
  * 
- * @author  Michael Kölling and David J. Barnes
- * @version 2011.07.31
+ * Un analizador sintactico lee las entradas del jugador y trata de interpretarlas como un comando del juego.
+ * Cada vez que es llamado, lee la primera linea de la terminal y trata de interpretarla como un comando formado por dos palabras.
+ * 
+ * Si la primera palabra no se encuentra en la lista de comandos conocidos, el comando se interpreta como nulo.
+ * 
+ * El analizador sintactico tiene una lista de comandos conocidos. Las entradas de terminal se verifican contra esta lista.
+ * 
+ * @author d4s1ns
+ * @version 2018/04/13
  */
-public class Parser 
-{
-    private CommandWords commands;  // holds all valid command words
-    private Scanner reader;         // source of command input
+public class Parser {
+    // Lista de los comandos conocidos.
+    private CommandWords commands;
+    // Fuente de las entradas del analizador.
+    private Scanner reader;
 
     /**
-     * Create a parser to read from the terminal window.
+     * Constructor - Crea un analizador sintactico que lea las entradas de la terminal de texto.
      */
-    public Parser() 
-    {
+    public Parser() {
         commands = new CommandWords();
         reader = new Scanner(System.in);
     }
 
     /**
-     * @return The next command from the user.
+     * Devuelve el siguiente comando del jugador.
+     * @return Devuelve el siguiente comando del jugador.
      */
-    public Command getCommand() 
-    {
-        String inputLine;   // will hold the full input line
+    public Command nextCommand() {
+        String inputLine;   // Entrada de texto completa.
         String word1 = null;
         String word2 = null;
 
-        System.out.print("> ");     // print prompt
+        System.out.print("> ");     // Prompt.
 
         inputLine = reader.nextLine();
 
-        // Find up to two words on the line.
+        // Encuentra dos palabras en la entrada de texto.
         Scanner tokenizer = new Scanner(inputLine);
         if(tokenizer.hasNext()) {
-            word1 = tokenizer.next();      // get first word
+            word1 = tokenizer.next();      // Primera palabra.
             if(tokenizer.hasNext()) {
-                word2 = tokenizer.next();      // get second word
-                // note: we just ignore the rest of the input line.
+                word2 = tokenizer.next();      // Segunda palabra.
+                // Se ignoran el resto de palabras de la linea..
             }
         }
 
-        // Now check whether this word is known. If so, create a command
-        // with it. If not, create a "null" command (for unknown command).
+        // Comprueba si la primera palabra es un comando conocido.
+        // Si lo es, crea un comando con ella, si no, crea un comando desconocido.
+        Command refund;
         if(commands.isCommand(word1)) {
-            return new Command(word1, word2);
+            refund = new Command(word1, word2);
         }
         else {
-            return new Command(null, word2); 
+            refund = new Command(null, word2); 
         }
+        return refund;
     }
     
     /**
-     * Devuelve una cadena con todos los comandos validos.
+     * Muestra por terminal una lista con todos los comandos conocidos.
      */
-    public String getAllCommands() {
-        return commands.getCommandList();
+    public void commandsList() {
+        System.out.println(commands);
     }
- 
 }

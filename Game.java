@@ -2,31 +2,38 @@ import java.util.Stack;
 import java.util.HashMap;
 
 /**
- *  Representa la interfaz con la que se comunicara el jugador.
+ * Representa el
+ * Para jugar, crea una instancia de esta clase.
  * 
- *  Para jugar, crea una instancia de esta clase.
  * 
+ *  
+ * Game pertenece a la aplicacion 'sneak-in-class'.
  * 
  * @author  D4s1ns
- * @version 2018.03.13
+ * @version 2018.04.13
  */
 
 public class Game  {
+    // Impedimento maximo para todos los personajes.
+    private final static int MAX_CARGO = 100;
+    
+    // Personaje del jugador.
+    private Character character;
+    // Sala inicial.
+    private Room initialRoom;
     // Analizador de sintaxis.
     private Parser parser;
-    private Room initialRoom;
-    private Character character;
-    private static final int MAX_CARGO = 100;
         
     /**
-     * Crea el juego e inicializa su mapa interno.
+     * Constructor - Crea e inizializa el escenario, el analizador de sintaxis y el personaje.
      */
     public Game() {
         createRooms();
-        character = new Character("player1", initialRoom, MAX_CARGO);
+        character = new Character("John Doe", initialRoom, MAX_CARGO);
         parser = new Parser();
     }
-
+    
+    // TRIPAS DEL JUEGO.
     /**
      * Crea todas las habitaciones y establece como se unen entre ellas.
      */
@@ -36,34 +43,34 @@ public class Game  {
         String description = "Las aulas estan cerradas y la salida de emergencia, bloqueada.\n" +
                              "No hay nada que hacer aqui aqui";
         String name = "el pasillo de bachiller";
-        bachiller = (new Room(name, description));
+        bachiller = (new Room("00", name, description));
      
         description = "Te encuentras entre el pasillo de FP y el de Bachiller.\n" + 
                       "Hay unos aseos, pero parecen fuera de servicio";
         name = "el pasillo principal"; 
-        pasillo =new Room(name, description);
+        pasillo =new Room("01", name, description);
 
         description = "Se puede escuchar ruido en el aula 203 Las clase de Programacion ya  ha comenzado.";
         name = "el pasillo de fp";
-        fp = new Room(name, description);
+        fp = new Room("02", name, description);
 
         
         description = "Un escalofrio te recorre.\n" +
                       "No puedes sentir compasion por los cientos de almas suspensas en este aula";
         name = "aula de examenes";
-        aula201 = new Room(name, description);
+        aula201 = new Room("03", name, description);
 
         
         description = "Hay un par de repetidores abrumados por la tarea de Roberto.\n" +
                       "Una de las ventanas esta abierta y parece conducir al aula 203.";
         name = "aula de dam2";
-        aula202 = new Room(name, description);
+        aula202 = new Room("04", name, description);
 
         
         description = "Los alumnos parecen estresados y abatidos\n" +
                       "Una de las ventanas esta abierta y parece conducir al aula 202.\n";
         name = "aula de dam1";
-        aula203 = new Room(name, description);
+        aula203 = new Room("05", name, description);
         
         // Vincular salidas:
         bachiller.addExit("east", pasillo);
@@ -80,143 +87,124 @@ public class Game  {
         aula203.addExit("west",fp); 
         
         // Anadir objetos
-        pasillo.addItem(new Item("alarma", "Una tradicional alarma de incendios", 100));
-        aula201.addItem(new Item("esqueleto", "Pertenecio a un repetidor que jamas aprobo redes", 80));
+        pasillo.addItem(new Item("alarma", "Una tradicional alarma de incendios", 100, true));
+        aula201.addItem(new Item("esqueleto", "Pertenecio a un repetidor que jamas aprobo redes", 80, true));
         
         // Establece la habitacion inicial
         initialRoom = pasillo;
     }
     
     /**
-     * Comprueba si el comando tiene segunda palabra.
-     * @param commands El commando a comprobar.
+     * Comprueba si un comando es un comando complejo.
+     * Los comandos complejos son aquellos que tienen segunda palabra.
+     * @param command Comando a comprobar.
+     * @return Verdadero si es un comando complejo o, falso, si no lo es.
      */
-    private boolean isAComplexCommand(Command command) {
-        Boolean refund = true;
-        if(!command.hasSecondWord()) {
-            refund = false;
-            System.out.println("Este comando requiere de una segunda palabra");
+    private boolean isComplex(Command command) {
+        boolean refund = command.hasSecondWord();
+        if (! refund) {
+            System.out.println("Este comando necesita de una segunda palabra.");
         }
         return refund;
     }
-    
-    /**
-     * Imprime la descripcion de la habitacion actual y sus salidas.
-     */
-    private void info() {
-        character.look();
-    }
 
     /**
-     *  Main play routine.  Loops until end of play.
+     * Rutina principal del juego - Se repite hasta el final de la partida.
      */
     public void play() {            
-        printWelcome();
+        welcome();
 
-        // Enter the main command loop.  Here we repeatedly read commands and
-        // execute them until the game is over.
-                
+        // Entra en el bucle principal. 
+        // Este lee reiterativamente los comandos del jugador y los ejecuta hasta quel juego acaba.
+                       
         boolean finished = false;
         while (! finished) {
-            Command command = parser.getCommand();
+            Command command = parser.nextCommand();
             finished = processCommand(command);
         }
         System.out.println("Gracias por jugar. Hasta luego!");
     }
 
     /**
-     * Print out the opening message for the player.
+     * Ejecuta el comando indicado.
+     * @param command Comando a ejecutar.
+     * @return Devuelve verdadero si el comando termina el juego o, falso, en cualquier otro caso.
      */
-    private void printWelcome() {
-        System.out.println();
-        System.out.println("Bienvenido a 'Zuul-Dani':");
-        System.out.println("Escribe 'help' si necesitas ayuda.");
-        System.out.println();
-        info();
-    }
-
-    /**
-     * Given a command, process (that is: execute) the command.
-     * @param command The command to be processed.
-     * @return true If the command ends the game, false otherwise.
-     */
-    private boolean processCommand(Command command) 
-    {
+    private boolean processCommand(Command command) {
         boolean wantToQuit = false;
-
         if(command.isUnknown()) {
-            System.out.println("I don't know what you mean...");
-            return false;
-        }
-
-        String commandWord = command.getCommandWord();
-        if (commandWord.equals("help")) {
-            printHelp();
-        }
-        else if (commandWord.equals("go")) {
-            if ( isAComplexCommand(command) ) {
-                character.moveTo(command.getSecondWord());
-            }
-        }
-        else if (commandWord.equals("quit")) {
-            wantToQuit = quit(command);
-        }
-        else if (commandWord.equals("look")) {
-            character.look();
-        }
-        else if (commandWord.equals("eat")) {
-            character.eat();
-        }
-        else if (commandWord.equals("back")) {
-            character.back();
-        }
-        else if (commandWord.equals("items")) {
-            character.items();
-        }
-        else if (commandWord.equals("take")) {
-            if ( isAComplexCommand(command) ) {
-                character.take(command.getSecondWord());
-            }
-        }
-        else if (commandWord.equals("drop")) {
-            if ( isAComplexCommand(command) ) {
-                character.drop(command.getSecondWord());
-            }
-        }
-
-        return wantToQuit;
-    }
-
-    // implementations of user commands:
-
-    /**
-     * Print out some help information.
-     * Here we print some stupid, cryptic message and a list of the 
-     * command words.
-     */
-    private void printHelp() 
-    {
-        System.out.println("You are lost. You are alone. You wander");
-        System.out.println("around at the university.");
-        System.out.println();
-        System.out.println("Los comandos disponibles son:");
-        System.out.println(parser.getAllCommands());
-    }
-        
-    /** 
-     * "Quit" was entered. Check the rest of the command to see
-     * whether we really quit the game.
-     * @return true, if this command quits the game, false otherwise.
-     */
-    private boolean quit(Command command) 
-    {
-        if(command.hasSecondWord()) {
-            System.out.println("Quit what?");
-            return false;
+            System.out.println("No se reconoce el comando.");
         }
         else {
-            return true;  // signal that we want to quit
+            String commandWord = command.getCommandWord();
+            if (commandWord.equals("help")) {
+                help();
+            }
+            else if (commandWord.equals("go")) {
+                if (isComplex(command)) {
+                    character.goTo(command.getSecondWord());
+                }
+            }
+            else if (commandWord.equals("quit")) {
+                wantToQuit = quit(command);
+            }
+            else if (commandWord.equals("look")) {
+                character.look();
+            }
+            else if (commandWord.equals("items")) {
+                character.inventory();
+            }
+            else if (commandWord.equals("take")) {
+                if (isComplex(command)) {
+                    character.pick(command.getSecondWord());
+                }
+            }
+            else if (commandWord.equals("drop")) {
+                if (isComplex(command)) {
+                    character.drop(command.getSecondWord());
+                }
+            }
         }
+        return wantToQuit;
+    }
+    
+    /**
+     * Muestra por pantalla el mensaje de bienvenida del juego.
+     */
+    private void welcome() {
+        System.out.println("Bienvenido a 'sneak-in-class'");
+        System.out.println("Sneak in Class es un juego de rol basado en texto.");
+        System.out.println("El objetivo consiste en llegar al aula 203 tarde sin tener que pagar la multa.");
+        System.out.println();
+        System.out.println("Escribe 'help' si necesitas ayuda.");
+        System.out.println("Buena suerte!");
+        System.out.println();
+        character.look();
+    }
+
+    // ACCIONES DE LOS COMANDOS:
+    /**
+     * Muestra la lista de comandos del juego.
+     */
+    private void help() {
+        System.out.println("Bienvenido a la ayuda del juego.");
+        System.out.println("Los comandos disponibles son:");
+        parser.commandsList();
+    }
+    
+    /** 
+     * Termina la partida.
+     * @return Devuelve verdadero si este comando realmente termina la partida o, falso, si no lo hace.
+     */
+    private boolean quit(Command command) {
+        boolean refund = false;
+        if(command.hasSecondWord()) {
+            System.out.println("Terminar que?");
+        }
+        else {
+            refund = true;
+        }
+        return refund;
     }
     
 }

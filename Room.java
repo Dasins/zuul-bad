@@ -1,62 +1,118 @@
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Iterator;
 
 /**
- * Representa una sala del escenario del juego.
- *
- * Room pertenece a la aplicacion zuul-dani. 
- *
- * Una sala es una localizacion dentro del escenario del juego.
- * Las salas conectan con otras mediante salidas (referencias a otras salas).
- * Las salas son capaces de alojar objetos.
+ * Una localizacion dentro del escenario del juego.
  * 
- * @author  d4sºns
- * @version 2018.03.23
+ * Room pertenece a la aplicacion 'sneak-in-class'.
+ * 
+ * Una sala es una localizacion del escenario. Las salas se interconectan con otras a traves de salidas. 
+ * Las salidas son referencias a otras salas. Las salas pueden albergar objetos. 
+ *
+ * @author d4s1ns
+ * @version 2018/04/13
  */
-public class Room 
-{
-    // El nombre de la sala.
-    private String name;
-    // La descripcion de la sala.
+public class Room {
+    // Descripcion de la sala.
     private String description;
-    // El conjunto de salas y, su direccion asociada, con las que conecta esta sala. 
-    private HashMap<String, Room> neighbors;
-    // Los objetos que hay en la sala.
-    private HashMap<String, Item> items; 
+    // Nombre de la sala. Debe ser unico e identificativo.
+    private String name;
+
+    // Objetos de la sala.
+    private HashMap<String, Item> items;
+    // Salidas de la sala.
+    private HashMap<String, Room> neighbors;     
 
     /**
-     * Constructor
-     * Para crear una sala es necesario indicar un nombre unico e identificativo y una descripcion de la misma.
-     * Por defecto, las salas creadas no tendran salidas.
-     * @param description The room's description.
-     * @param item El item contenido en esta sala, null si no contiene nada.
+     * Constructor - Crea una sala sin salidas indicando su nombre y su descripcion.
+     * @param id Identificador unico de la sala.
+     * @param name Nombre de la sala. Debe ser unico e identificativo.
+     * @param description Descripcion de la sala.
      */
-    public Room(String name, String description) {
+    public Room(String id, String name, String description) {
+        this.name = name;
         this.description = description;
         neighbors = new HashMap<>();
         items = new HashMap<>();
     }
+  
+    // INFORMACION SOBRE LA SALA.
+    /**
+     * Devuelve una cadena de texto con las direcciones en las que hay una salida de la sala.
+     * @return Devuelve una cadena de texto con todas las salidas de la sala.
+     */
+    public String exits() {
+        String refund = "Salidas: ";
+        for (String direction : neighbors.keySet()) {
+            refund += "[" + direction + "] ";
+        }
+        return refund;
+    }
     
     /**
-     * Busca una salida en la direccion indicada por parametro.
-     * Si existe una salida, devuelve la sala que se encuentra al otro lado. En cualquier otro caso devuelve null.
-     * 
-     * @param direction La direccion en la que se busca una salida.
-     * @return Si existe una salida, devuelve la sala que se encuentra al otro lado. En cualquier otro caso devuelve null.
+     * Busca un objeto por su nombre en la sala y lo devuelve, si no esta en la sala, devuelve 'null'.
+     * @param itemName Nombre del objeto buscado.
+     * @return Devuelve el objeto buscado o, 'null', si no esta en la sala.
      */
-    public Room getExit(String direction) {
-        Room refund = null;
-        boolean searching = true;
-        Iterator<Map.Entry<String, Room>> rooms = neighbors.entrySet().iterator();
-        while (rooms.hasNext() && searching) {
-            Map.Entry<String, Room> room = rooms.next();
-            if (direction.equals(room.getKey())) {
-               refund = room.getValue();
-               searching = false;
+    public Item findItem(String itemName) {   
+        return items.get(itemName);
+    }
+    
+    /**
+     * Devuelve la descripcion de la sala.
+     * @return Devuelve la descripcion de la sala.
+     */
+    public String getDescription() {
+        return description;
+    }
+    
+    /**
+     * Devuelve el nombre de la sala.
+     * @return Devuelve el nombre de la sala.
+     */
+    public String getName() {
+        return name;
+    }
+    
+    /**
+     * Devuelve una cadena de texto con la informacion de todos los objetos en la sala.
+     * @return Devuelve una cadena de texto con la informacion de todos los objetos en la sala.
+     */
+    public String items() {
+        String refund = "";
+        if (!items.isEmpty()) {
+            refund = "Objetos en la sala:\n";
+            for (Item item : items.values()) {
+                refund += item + "\n";
             }
         }
-        return refund; 
+        return refund;
+    }
+    
+    /**
+     * Devuelve la sala adyacente en la direccion indicada o 'null' si no existe.
+     * @return Devuelve la sala adyacente en la direccion indicada o 'null' si no existe.
+     */
+    public Room pathTo(String direction) {
+        return neighbors.get(direction);
+    }
+    
+    /** 
+     * Devuelve una cadena de texto con toda la informacion acerca de la sala.
+     * @return Devuelve una cadena de texto con toda la informacion acerca de la sala.
+     */
+    public String toString() {
+        return "[" + name + "].\n\n" + description + "\n\n" + items() + "\n" + exits();
+    }
+    
+    // OPERACIONES CON LA SALA
+    /**
+     * Crea una salida en la direccion indicada hacia la sala especificada.
+     * Si ya existe una salida en la direccion indicada, se sobreescribe.
+     * @param direction Direccion en la que se situara la salida.
+     * @param room Sala con la que conecta la sala a traves de esta salida.
+     */
+    public void addExit(String direction, Room room) {
+        neighbors.put(direction, room);
     }
     
     /**
@@ -65,100 +121,24 @@ public class Room
      * @param item El objeto a colocar en la sala.
      */
     public void addItem(Item item) {
-        items.put(item.name(), item);
+        items.put(item.getName(), item);
     }
     
     /**
-     * Crea una salida en la direccion indicada hacia la sala indicada.
-     * Si ya existe una salida en esa direccion, la sobreescribe.
-     * 
-     * @param direction La direccion en la se quiere crear la salida.
-     * @param room La sala con la que se quiere conectar.
+     * Trata de eliminar una salida de la sala.
+     * Se debe especificar la direccion en la que se encuentra la salida.
+     * Si no existe una salida en esa direccion, no hace nada.
+     * @param direction Direccion de la salida a eliminar.
      */
-    public void addExit(String direction, Room room) {
-        neighbors.put(direction, room);
+    public void removeExit(String direction) {
+        neighbors.remove(direction);
     }
     
     /**
-     * Devuelve la descripcion de la sala.
-     * @return Devuelve la descripcion de la sala.
-     */
-    public String description() {
-        return description;
-    }
-    
-    /**
-     * Devuelve el nombre de la sala.
-     * @return Devuelve el nombre de la sala.
-     */
-    public String name() {
-        return name;
-    }
-    
-    /**
-     * Devuelve la informacion de los objetos alojados en la sala o null, si no hay objetos en la sala. 
-     * @return Devuelve la informacion de los objetos alojados en la sala o null, en cualquier otro caso. 
-     */
-    public String itemsInfo() {
-        String refund = null;
-        for (Item item : items.values()) {
-                refund += item.info() + "\n";
-        }
-        return refund;
-    }
-    
-    /**
-     * Devuelve la informacion de las salidas disponibles en la sala, o null, si no hay salidas en la sala.
-     * For example: "Exits: north east west"
-     *
-     * @return Devuelve la informacion de las salidas disponibles en la sala, o null, si no hay salidas en la sala.
-     */
-    public String exitsInfo() {
-        String refund = null;
-        if (!neighbors.isEmpty()) {
-            for (String key : neighbors.keySet()) {
-                    refund += "[" + key + "] ";
-            }
-            refund = "Exits:\n" + refund + "\n";
-        }
-        return refund;
-    }
-    
-    /**
-     * Devuelve la informacion sobre la sala.
-     * @return Devuelve la informacion sobre la sala.
-     */
-    public String roomInfo() {
-        return "[" + name.toUpperCase() + "] " + ":\n" + description;
-    }
-    
-    /**
-     * Devuelve toda la informacion disponible sobre la sala.
-     * @return Devuelve toda la informacion disponible sobre la sala.
-     */
-    public String info() {
-        String refund = roomInfo();
-        if (exitsInfo() != null) {
-            refund += "/n" + roomInfo();
-        }
-        if (itemsInfo() != null) {
-            refund += "/n" + itemsInfo();
-        }
-        return refund;
-    }
-
-    /**
-     * Busca un objeto en la sala y lo devuelve, si no existe, devuelve null.
-     * @param itemName El nombre del objeto buscado.
-     * @return Devuelve el objeto buscado o, null si no existe.
-     */
-    public Item getItem(String itemName) {
-        return items.get(itemName);
-    }
-    
-    /**
-     * Elimina el objeto buscado de la sala, si no existe, no hace nada.
-     * @param itemName El nombre del objeto buscado.
+     * Trata de eliminar un objeto de la sala.
+     * Se debe especificar el nombre del objeto.
+     * Si no existe un objeto con ese nombre, no hace nada.
+     * @param itemName Nombre del objeto buscado.
      */
     public void removeItem(String itemName) {
         items.remove(itemName);

@@ -1,95 +1,79 @@
 
 /**
- * Representa un objeto del mundo del juego.
+ * Un objeto del mundo del juego.
  * 
- * Item pertenece a la aplicacion zuul-dani.
+ * Item pertenece a la aplicacion 'sneak-in-class'.
  * 
- * Los objetos tiene un peso y pueden ser manipuables o no.
- * 
+ * Los objetos representan elementos del escenario. Existen objetos manipulables con los que el personaje puede interactuar y otros
+ * no manipulables con los que no puede interactuar.
+ *
  * @author d4s1ns
- * @version 2018/03/12
+ * @version 2018/04/13
  */
 public class Item {
-    // Nombre del objeto.
-    String name;
-    // Descripcion del objeto.
-    String description;
+    // Determina si se puede recoger o no. Recogible - Verdadero, No Recogible - Falso.
+    boolean pickable;
     // Peso del objeto.
     int weight;
-    // Determina si se puede manipular o no. (True, manipulable).
-    boolean usable;
     
+    // Descripcion del objeto.
+    String description;
+    // Nombre del objeto.
+    String name;
+
     /**
-     * Constructor
-     * 
-     * Construye objetos que por defecto son manipuables.
-     * Para crear un objeto se debe especificar un nombre unico e identificativo, la descripcion del objeto y su peso.
-     * 
-     * @param name El nombre del objeto.
-     * @param weight El peso del objeto en cuestion.
+     * Constructor - Crea un objeto indicando su nombre, su descripcion, su peso y si se puede recoger.
+     * @param name Nombre unico e identificativo del objeto.
+     * @param description Descripcion del objeto.
+     * @param weight Peso del objeto.
+     * @param usable Verdadero - Se puede recoger, Falso - No se puede recoger.
      */
-    public Item(String name, String description, int weight) {
+    public Item(String name, String description, int weight, boolean pickable) {
         this.name = name;
         this.description = description;
         this.weight = weight;
-        usable = true;
+        this.pickable = pickable;
     }
     
+    // INFORMACION DEL OBJETO.
     /**
-     * Constructor
-     * 
-     * Construye objetos personalizados
-     * Para crear un objeto se debe especificar un nombre unico e identificativo, la descripcion del objeto su peso
-     * y si es manipulable.
-     * 
-     * 
-     * @param name El nombre del objeto.
-     * @param weight El peso del objeto en cuestion.
+     * Devuelve la descripcion del objeto.
+     * @return Devuelve la descripcion del objeto.
      */
-    public Item(String name, String description, int weight, boolean usable) {
-        this.name = name;
-        this.description = description;
-        this.weight = weight;
-        this.usable = usable;
+    public String getDescription() {
+        return description;
     }
     
     /**
      * Devuelve el nombre del objeto.
      * @return Devuelve el nombre del objeto.
      */
-    public String name() {
+    public String getName() {
         return name;
-    }
-    
-    /**
-     * Devuelve la descripcion del objeto.
-     * @return Devuelve la descripcion del objeto.
-     */
-    public String description() {
-        return description;
-    }
+    } 
     
     /**
      * Devuelve el peso del objeto.
      * @return Devuelve el peso del objeto.
      */
-    public int weight() {
+    public int getWeight() {
         return weight;
     }
     
     /**
-     * Devuelve toda la informacion del objeto.
-     * @return Devuelve toda la informacion del objeto.
+     * Devuelve 'true' si el objeto se puede recoger y 'false' si no.
+     * @return Devuelve 'true' si el objeto se puede recoger y 'false' si no.
      */
-    public String info() {
-        return "[" + name.toUpperCase() + "]:\n" + description + "\n" + weight;
+    public boolean isPickable() {
+        return pickable;
     }
     
     /**
-     * Devuelve true si el objeto es manipuable y false si no.
-     * @return Devuelve true si el objeto es manipuable y false si no.
+     * Devuelve una cadena de texto con toda la informacion acerca del objeto.
+     * @return Devuelve una cadena de texto con toda la informacion acerca del objeto.
      */
-    public boolean isUsable() {
-        return usable;
+    public String toString() {
+        return "[" + name + "]:\n" + description + "\nPeso: " + weight + "\tUsable: " + pickable;
     }
+    
 }

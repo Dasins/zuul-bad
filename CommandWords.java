@@ -1,52 +1,52 @@
 /**
- * This class is part of the "World of Zuul" application. 
- * "World of Zuul" is a very simple, text based adventure game.  
+ * Lista de los comandos conocidos por el juego.
  * 
- * This class holds an enumeration of all command words known to the game.
- * It is used to recognise commands as they are typed in.
- *
- * @author  Michael Kölling and David J. Barnes
- * @version 2011.07.31
+ * CommandsList pertenece a la aplicacion 'sneak-in-class'.
+ * 
+ * @author  d4s1ns
+ * @version 2018/03/25
  */
 
-public class CommandWords
-{
-    // a constant array that holds all valid command words
+public class CommandWords {
+    // Lista de comandos conocidos.
     private static final String[] validCommands = {
-        "go", "quit", "help", "look", "eat", "back", "items", "take", "drop"
+        "go", "quit", "help", "look", "take", "drop", "items"
     };
 
     /**
-     * Constructor - initialise the command words.
+     * Constructor.
      */
-    public CommandWords()
-    {
-        // nothing to do at the moment...
+    public CommandWords() {
+        // Nada que hacer aqui por ahora.
     }
 
     /**
-     * Check whether a given String is a valid command word. 
-     * @return true if a given string is a valid command,
-     * false if it isn't.
+     * Comprueba si la palabra indicada esta en la lista de comandos validos.
+     * @param commandWord La palabra que se comprueba si es un comando valido.
+     * @return Devuelve verdadero si la palabra indicada esta en la lista de comandos validos o falso, si no lo esta.
      */
-    public boolean isCommand(String aString)
-    {
-        for(int i = 0; i < validCommands.length; i++) {
-            if(validCommands[i].equals(aString))
-                return true;
+    public boolean isCommand(String commandWord) {
+        boolean searching = true, refund = false;
+        int i = 0; 
+        while (searching && i < validCommands.length) {
+            if (validCommands[i].equals(commandWord)) {
+                searching = false;
+                refund = true;
+            }
+            i++;
         }
-        // if we get here, the string was not found in the commands
-        return false;
+        return refund;
     }
     
     /**
-     * Devuelve una cadena con todos los commandos validos separados por espacios.
+     * Devuelve como una cadena de texto todos los comandos conocidos por el juego.
+     * @return Devuelve como una cadena de texto todos los comandos conocidos por el juego.
      */
-    public String getCommandList() {
-        String retorno = "";
-        for (String command : validCommands) {
-            retorno += command + " ";
-        }
-        return retorno;
+    public String toString() {
+        String refund = "";
+        for (String commandWord : validCommands) {
+            refund += commandWord + ", ";
+        }        
+        return refund;
     }
 }

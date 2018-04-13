@@ -1,73 +1,67 @@
+
 /**
- * This class is part of the "World of Zuul" application. 
- * "World of Zuul" is a very simple, text based adventure game.  
- *
- * This class holds information about a command that was issued by the user.
- * A command currently consists of two strings: a command word and a second
- * word (for example, if the command was "take map", then the two strings
- * obviously are "take" and "map").
+ * Comando.
  * 
- * The way this is used is: Commands are already checked for being valid
- * command words. If the user entered an invalid command (a word that is not
- * known) then the command word is <null>.
- *
- * If the command had only one word, then the second word is <null>.
+ * Command pertenece a la aplicacion 'sneak-in-class'.
  * 
- * @author  Michael Kölling and David J. Barnes
- * @version 2011.07.31
+ * Un comando es un conjunto de, como maximo, dos palabras que el juego puede procesar para realizar una accion. 
+ * La primera palabra debe ser una palabra reservada y estar incluida en la lista de comandos validos.
+ * La segunda palabra solo es utilizada cuando el juego necesita de un parametro adicional para ejecutar el comando.
+ * 
+ * Un comando cuya primera palabra sea 'null' se considera un comando desconocido.
+ * Un comando cuya segunda palabra sea 'null' se considera un comando simple.
+ *
+ * @author d4s1ns
+ * @version 2018/04/13
  */
-
-public class Command
-{
+public class Command {
+    // Palabra reservada - determina la accion que debe realizar el juego.
     private String commandWord;
+    // Parametro del comando - utilizado en comandos complejos.
     private String secondWord;
-
+    
     /**
-     * Create a command object. First and second word must be supplied, but
-     * either one (or both) can be null.
-     * @param firstWord The first word of the command. Null if the command
-     *                  was not recognised.
-     * @param secondWord The second word of the command.
+     * Constructor - Crea un comando especificando la primera palabra y la segunda, cualquiera de ellas o ambas pueden ser 'null'.
+     * Si la primera palabra es 'null' se trata de un comando desconocido - no procesable.
+     * @param firstWord Primera palabra del comando.
+     * @param secondWord Segunda palabra del comando.
      */
-    public Command(String firstWord, String secondWord)
-    {
+    public Command(String firstWord, String secondWord) {
         commandWord = firstWord;
         this.secondWord = secondWord;
     }
-
+    
+    // INFORMACION DEL COMANDO.
     /**
-     * Return the command word (the first word) of this command. If the
-     * command was not understood, the result is null.
-     * @return The command word.
+     * Devuelve la primera palabra del comando si hay, si no hay, devuelve 'null'.
+     * @return Devuelve la primera palabra del comando.
      */
-    public String getCommandWord()
-    {
+    public String getCommandWord() {
         return commandWord;
     }
-
+    
     /**
-     * @return The second word of this command. Returns null if there was no
-     * second word.
+     * Devuelve la segunda palabra del comando si hay, si no hay, devuelve 'null'.
+     * @return Devuelve la segunda palabra del comando si hay, si no hay, devuelve 'null'.
      */
-    public String getSecondWord()
-    {
+    public String getSecondWord() {
         return secondWord;
     }
-
+    
     /**
-     * @return true if this command was not understood.
+     * Devuelve verdadero si el comando tiene segunda palabra o, falso, si no la tiene.
+     * @return Devuelve verdadero si el comando tiene segunda palabra o, falso, si no la tiene.
      */
-    public boolean isUnknown()
-    {
-        return (commandWord == null);
-    }
-
-    /**
-     * @return true if the command has a second word.
-     */
-    public boolean hasSecondWord()
-    {
+    public boolean hasSecondWord() {
         return (secondWord != null);
     }
+    
+    /**
+     * Devuelve verdadero si el comando es desconocido o, falso, si no lo es.
+     * @return Devuelve verdadero si el comando es desconocido o, falso, si no lo es.
+     */
+    public boolean isUnknown() {
+        return (commandWord == null);
+    }
+        
 }
-

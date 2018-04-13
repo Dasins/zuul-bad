@@ -2,45 +2,73 @@ import java.util.Stack;
 import java.util.HashMap;
 
 /**
- * Representa un personaje del mundo del juego.
+ * Un personaje del mundo del juego.
  * 
- * Character pertenece a la aplicacion zuul-dani.
+ * Character pertenece a la aplicacion 'sneak-in-class'.
  * 
- * Cada personaje tiene un nombre unico identificativo. 
- * Los personajes pueden desplazarse entre salas y observar lo que hay en ellas.
+ * Un personaje es un actor protagonista de la historia del juego.
+ * 
+ * El jugador puede controlar las acciones del personaje mediante el uso de comandos.
+ * Los personajes pueden realizar diversas acciones: moverse, volver atras, interactuar con objetos.
+ * Las acciones del personaje deben estar asociadas a comandos reconocidos e implentados en game.
+ * 
+ * Un personaje puede moverse a traves de las salas cruzando por sus diferentes salidas.
+ * Tambien puede recoger objetos (si no exceden su carga maxima), transportarlos o dejar objetos de su inventario en la sala en que se encuentra.
  *
- * @author D4s1ns
- * @version 2018/03/23
+ * @author d4s1ns
+ * @version 2018/04/13
  */
 public class Character {
-    // Nombre del personaje
-    private String name;
-    // Sala actual.
-    private Room currentRoom;
-    // Historial de salas visitadas.
-    private Stack<Room> roomLog;
-    // Inventario del personaje.
-    private HashMap<String, Item> inventory;
+    // Carga inicial transportada.
+    private final static int INITIAL_CARGO = 0;
+    
+    // Carga actual del personaje.
+    private int cargo;
     // Carga maxima del peronaje.
     private int maxCargo;
-    // Carga actual del personaje.
-    private int actualCargo;
+    
+    // Sala actual.
+    private Room currentRoom;
+    // Nombre del personaje
+    private String name;
+    
+    // Inventario del personaje.
+    private HashMap<String, Item> inventory;
+    // Historial de salas visitadas.
+    private Stack<Room> roomLog;  
     
     /**
-     * Constructor
-     * Para crear un personaje debemos especificar un nombre identificativo unico (ej:character1).
-     * Ademas debemos especificar la sala en la que aparece el personaje.
+     * Constructor - Inicializa el inventario, el historial de salas visitadas, la carga maxima e inicial y, 
+     * determina la sala donde aparecera el personaje por primera vez.
      * 
-     * @param name El nombre del personaje.
-     * @param startRoom La sala donde aparecera el personaje.
+     * @param name Nombre unico e identificativo para el personaje. 
+     * @param spawnRoom Sala donde aparecera el personaje por primera vez.
+     * @param maxCargo Carga maxima que puede transportar el personaje.
      */
-    public Character(String name, Room startRoom, int maxCargo) {
+    public Character(String name, Room spawnRoom, int maxCargo) {
         this.name = name;
-        currentRoom = startRoom;
-        roomLog = new Stack<>();
-        inventory = new HashMap<>();
+        currentRoom = spawnRoom;
         this.maxCargo = maxCargo;
-        actualCargo = 0;
+        cargo = INITIAL_CARGO;
+        inventory = new HashMap<>();
+        roomLog = new Stack<>();
+    }
+    
+    // INFORMACION DEL PERSONAJE.
+    /**
+     * Devuelve la carga actual del personaje.
+     * @return Devuelve la carga actual del personaje.
+     */
+    public int getCargo() {
+        return cargo;
+    }
+    
+    /**
+     * Devuelve la carga maxima del personaje.
+     * @return Devuelve la carga maxima del personaje.
+     */
+    public int getMaxCargo() {
+        return maxCargo;
     }
     
     /**
@@ -52,47 +80,29 @@ public class Character {
     }
     
     /**
-     * Trata de mover al personaje en la direccion indicada por parametro.
-     * Sin importar el resultado, informa por pantalla de lo que ha sucedido.
-     * 
-     * @param direction La direcion hacia la que se mueve el personaje.
+     * Devuelve una cadena de texto con la carga actual, maxima y el contenido del inventario del personaje.
+     * @return Devuelve una cadena de texto con la carga actual, maxima y el contenido del inventario del personaje.
      */
-    public void moveTo(String direction) {
-        Room nextRoom = currentRoom.getExit(direction);
-        if (nextRoom != null) {
-            String lastRoomName = roomLog.peek().name();
-            if (!roomLog.isEmpty() && lastRoomName.equals(nextRoom.name())) {
-                currentRoom = roomLog.pop();
-            }
-            else {
-                roomLog.push(currentRoom);
-                currentRoom = nextRoom;
-            }
-            look();
+    public String inventory() {
+        String refund = "Inventario [" + cargo + "/" + maxCargo + "]:";
+        for (Item item : inventory.values()) {
+            refund += "\n" + item.toString();
         }
-        else {
-            System.out.println("No hay ninguna salida");
-        }
+        return refund;
     }
     
     /**
-     * Representa una futura funcionalidad que permitira al personaje alimentarse.
-     * @deprecated
+     * Devuelve una cadena de texto con toda la informacion del personaje.
+     * @return Devuelve una cadena de texto con el nombre, la sala actual y el inventario del personaje.
      */
-    public void eat() {
-        System.out.println("Aun no tienes hambre. Acabas de comer");
+    public String toString() {
+        return "[" + name.toUpperCase() + "]:\nSala actual - " + currentRoom.toString() + "\n" + inventory(); 
     }
     
+    // ACCIONES DEL PERSONAJE.
     /**
-     * El personaje observa lo que hay a su alrededor en la sala.
-     * Se imprimira por pantalla toda la informacion relativa a la sala.
-     */
-    public void look() {
-        System.out.println("Estas en " + currentRoom.info());
-    }
-    
-    /**
-     * El personaje retrocede hacia la ultima sala que visito, si no hay salas anteriores, no hace nada.
+     * El personaje retrocede a la ultima sala visitada - Trata de hacer retroceder al personaje a la ultima sala visitada. 
+     * Si no hay una sala anterior a la que volver, no hace nada. Se puede invocar multiples veces.
      */
     public void back() {
         if (!roomLog.isEmpty()) {
@@ -101,60 +111,85 @@ public class Character {
     }
     
     /**
-     * Coge el objeto indicado de la sala y lo deposita en el inventario del personaje.
-     * Al coger un objeto, este se elimina de la sala.
-     * @param itemName El nombre del objeto que se quiere coger.
+     * El personaje deja un objeto de su inventario en la sala acutal - Trata de dejar un objeto del inventario en la sala.
+     * Se debe especificar el nombre del objeto.
+     * Sin importar lo sucedido, informa al jugador por pantalla del resultado.
+     * @param itemName Nombre del objeto a recoger.
      */
-    public void take(String itemName) {
-       Item item = currentRoom.getItem(itemName);
-       if (item != null) {
-           if (item.isUsable()) {
-               if (item.weight() + actualCargo <= maxCargo) { 
-                   currentRoom.removeItem(itemName);
-                   inventory.put(item.name(), item);
-                   actualCargo += item.weight();
-                   System.out.println("Has recogido [" + item.name() + "]");
-               }
-               else {
-                   System.out.println("El objeto pesa demasiado");
-               }
-           }
-           else {
-               System.out.println("El objeto no se puede recoger");
-           }
-       }
-       else {
-           System.out.println("No hay nada asi en la sala actual.");
-       }
-    }
-   
-    /**
-     * Muestra por pantalla todos los objetos del inventario.
-     */
-    public void items() {
-        System.out.println(actualCargo + "/" + maxCargo);
-        for (Item item :  inventory.values()) {
-            System.out.println(item.info());
+    public void drop(String itemName) {
+        Item item = inventory.get(itemName);
+        if (item != null) {
+            inventory.remove(itemName);
+            currentRoom.addItem(item);
+            System.out.println("Has depositado [" + itemName + "] en [" + currentRoom.getName() + "].");
+        }
+        else {
+            System.out.println("No se ha encontrado [" + itemName + "] en el inventario.");
         }
     }
     
     /**
-     * Coge el objeto indicado del inventario y lo deposita en la sala actual.
-     * Al coger un objeto, este se elimina del inventario.
-     * @param itemName El nombre del objeto que se quiere coger.
+     * El personaje se mueve en una direccion - Trata de cambiar de sala al personaje.
+     * Se debe especificar la direccion hacia donde avanza el personaje.
+     * Si no existe una salida de la sala en esa direccion, el personaje continuara en la misma sala.
+     * Sea cual sea el resultado, el jugador es informado por pantalla.
+     * @param direction La direccion hacia la que se mueve el personaje.
      */
-    public void drop(String itemName) {
-       Item item = inventory.get(itemName);
-       if (item != null) {
-           inventory.remove(itemName);
-           currentRoom.addItem(item);
-           actualCargo -= item.weight();
-           System.out.println("Has depositado [" + item.name() + "] en [" + currentRoom.name() + "]");
-       }
-       else {
-           System.out.println("No tienes ese objeto");
-       }
+    public void goTo(String direction) {
+        Room nextRoom = currentRoom.pathTo(direction);
+        if (nextRoom != null) {
+            if (!roomLog.isEmpty() && nextRoom.getName().equals(roomLog.peek().getName())) {
+                back();
+            }
+            else {
+                roomLog.push(currentRoom);
+                currentRoom = nextRoom;
+            }
+            look();
+        }
+        else {
+            System.out.println("No hay salida en esa direccion: [" + direction + "]");
+        }
     }
     
+    /**
+     * El personaje mira alrededor - Muestra por pantalla toda la informacion sobre la sala actual.
+     */
+    public void look() {
+        System.out.println("Estas en " + currentRoom);
+    }
+    
+    /**
+     * El personaje coge un objeto y lo guarda en su inventario - Trata de recoger un objeto de la sala. 
+     * Se debe especificar el nombre del objeto a recoger.
+     * El objeto debe ser recogible y no exceder la carga maxima al anadir su peso a la carga actual.
+     * Sin importar el resultado, informa al jugador de lo sucedido por pantalla.
+     * @param itemName Nombre del objeto a recoger.
+     */
+    public void pick(String itemName) {
+        Item item = currentRoom.findItem(itemName);
+        if (item != null) {
+            if (cargo + item.getWeight() <= maxCargo && item.isPickable()) {
+                currentRoom.removeItem(itemName);
+                inventory.put(item.getName(), item);
+                System.out.println("Se ha recogido [" + itemName + "]");
+            }
+            else {
+                System.out.println("[" + itemName + "] pesa demasiado.");
+            }
+        }
+        else {
+            System.out.println("No se ha encontrado [" + itemName + "] en la sala.");
+        }
+    }
+    
+    // INUTILISMOS Y PRUEBAS
+    /**
+     * Representa una futura funcionalidad que permitira al personaje alimentarse.
+     * @deprecated
+     */
+    public void eat() {
+        System.out.println("Aun no tienes hambre. Acabas de comer");
+    }
     
 }
