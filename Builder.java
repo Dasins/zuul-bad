@@ -2,6 +2,9 @@ import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Iterator;
 
 /**
  * Constructor de Escenarios de juego.
@@ -31,6 +34,8 @@ public class Builder {
     private final static String STATICITEMS_FILE = "/static_items.config";
     // Fichero de configuracion de la sala de aparicion.
     private final static String SPAWNROOM_FILE = "/spawnroom.config";
+    // Fichero de configuracion de la sala de aparicion.
+    private final static String RANDOMITEMS_FILE = "/randomitems.config";
     
     // Nombre del escenario elegido.
     private String mapName;
@@ -59,6 +64,7 @@ public class Builder {
             createExits();
             createItems();
             placeItem();
+            placeRandomItem();
         }
     }
     
@@ -159,4 +165,60 @@ public class Builder {
             e.printStackTrace();
         }
     }
+    
+    /**
+     * Obtiene una cadena aleatoria dentro de un coleccion excluyendo los valores de la lista negra.
+     * @param collection La coleccion de candenas donde se escogera una aleatoriamente.
+     * @param blacklist Las cadenas excluidas de la busqueda.
+     * @return Devuelve una cadena aleatoria de una coleccion de cadenas.
+     */
+    private String randomValue(HashSet<String> collection, HashSet<String> blacklist){
+        String refund = null;
+        // Crea una coleccion solo con los valores validos.
+        HashSet<String> pool = new HashSet();
+        for(String chain : collection) {
+           if (!blacklist.contains(chain)) {
+               pool.add(chain);
+           }
+        }
+        
+        Random randomizer = new Random();
+        Iterator it = pool.iterator();
+        int limit = randomizer.nextInt(pool.size());
+        int i = 0;
+        while (it.hasNext() && i <= limit) {
+            String chain = it.next().toString();
+            if (i == limit) {
+                refund = chain;
+            }
+            i++;
+        }
+        return refund;
+    }
+    
+    /**
+     * 
+     */
+    private void placeRandomItem() {
+        try {          
+            File file = new File(MAIN_FOLDER + mapName + RANDOMITEMS_FILE);
+            Scanner sc = new Scanner(file);        
+            while (sc.hasNextLine()) {
+                String[] info = sc.nextLine().split(":");
+                Item item = items.get(info[0]);   
+                HashSet<String> blacklist = new HashSet();
+                for (int i = 1; i < info.length; i++) {
+                    blacklist.add(info[i]);
+                }
+                HashSet<String> collection = new HashSet<>(rooms.keySet());
+                Room room = rooms.get(randomValue(collection, blacklist));
+                room.addItem(item);
+            }
+            sc.close();
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }      
+    }
+    
 }
