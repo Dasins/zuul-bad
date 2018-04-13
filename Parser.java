@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.HashSet;
 
 /**
  * Analizador de sintaxis.
@@ -16,8 +17,9 @@ import java.util.Scanner;
  * @version 2018/04/13
  */
 public class Parser {
-    // Lista de los comandos conocidos.
-    private CommandWords commands;
+    // Lista de comandos validos
+    private HashSet<String> validCommands;
+    
     // Fuente de las entradas del analizador.
     private Scanner reader;
 
@@ -25,8 +27,11 @@ public class Parser {
      * Constructor - Crea un analizador sintactico que lea las entradas de la terminal de texto.
      */
     public Parser() {
-        commands = new CommandWords();
         reader = new Scanner(System.in);
+        validCommands = new HashSet<>();
+        for (CommandWords enu : CommandWords.values()) {
+            validCommands.add(enu.name());
+        }
     }
 
     /**
@@ -45,7 +50,7 @@ public class Parser {
         // Encuentra dos palabras en la entrada de texto.
         Scanner tokenizer = new Scanner(inputLine);
         if(tokenizer.hasNext()) {
-            word1 = tokenizer.next();      // Primera palabra.
+            word1 = tokenizer.next().toUpperCase();      // Primera palabra.
             if(tokenizer.hasNext()) {
                 word2 = tokenizer.next();      // Segunda palabra.
                 // Se ignoran el resto de palabras de la linea..
@@ -55,12 +60,13 @@ public class Parser {
         // Comprueba si la primera palabra es un comando conocido.
         // Si lo es, crea un comando con ella, si no, crea un comando desconocido.
         Command refund;
-        if(commands.isCommand(word1)) {
+        if (validCommands.contains(word1)) {
             refund = new Command(word1, word2);
         }
         else {
-            refund = new Command(null, word2); 
+            refund = new Command("unknown", word2);
         }
+        
         return refund;
     }
     
@@ -68,6 +74,6 @@ public class Parser {
      * Muestra por terminal una lista con todos los comandos conocidos.
      */
     public void commandsList() {
-        System.out.println(commands);
+        System.out.println(validCommands);
     }
 }

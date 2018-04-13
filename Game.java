@@ -78,39 +78,36 @@ public class Game  {
      */
     private boolean processCommand(Command command) {
         boolean wantToQuit = false;
-        if(command.isUnknown()) {
-            System.out.println("No se reconoce el comando.");
-        }
-        else {
-            String commandWord = command.getCommandWord();
-            if (commandWord.equals("help")) {
-                help();
-            }
-            else if (commandWord.equals("go")) {
+        CommandWords commandWord = CommandWords.valueOf(command.getCommandWord());
+        switch (commandWord) {
+            case GO:
                 if (isComplex(command)) {
                     character.goTo(command.getSecondWord());
                 }
-            }
-            else if (commandWord.equals("quit")) {
+                break;
+            case HELP:
+                help();
+                break;
+            case QUIT:
                 wantToQuit = quit(command);
-            }
-            else if (commandWord.equals("look")) {
+                break;
+            case LOOK:
                 character.look();
-            }
-            else if (commandWord.equals("items")) {
+                break;
+            case ITEMS:
                 System.out.println(character.inventory());
-            }
-            else if (commandWord.equals("take")) {
+                break;
+            case TAKE:
                 if (isComplex(command)) {
                     character.pick(command.getSecondWord());
                 }
-            }
-            else if (commandWord.equals("drop")) {
+                break;
+            case DROP:
                 if (isComplex(command)) {
                     character.drop(command.getSecondWord());
                 }
-            }
-            else if (commandWord.equals("use")) {
+                break;
+            case USE:
                 if (isComplex(command)) {
                     if(character.use(command.getSecondWord())) {
                         builder.changeRoomDescription("el aula 203", "Todos han salido fuera al sonar la alarma.");
@@ -118,8 +115,8 @@ public class Game  {
                         endable = true;
                     }
                 }
-            }
-            else if (commandWord.equals("sit")) {
+                break;
+            case SIT:
                 if (character.actualRoom().equals("el aula 203")) {
                    if(endable) {
                        System.out.println("Enhorabuena, has evadido la multa un dia mas.");
@@ -132,9 +129,12 @@ public class Game  {
                 else {
                     System.out.println("Esta no es tu clase.");
                 }
-            }
-            System.out.println();
+                break;
+            case UNKNOWN:
+                System.out.println("No se reconoce el comando.");
+                break;      
         }
+        System.out.println();
         return wantToQuit;
     }
     
